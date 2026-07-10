@@ -4,143 +4,462 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Favour Tumba — Backend & AI Developer</title>
-  <meta name="description" content="Portfolio of Favour Tumba, Backend & AI Developer. Projects update automatically from GitHub.">
+  <meta name="description" content="Portfolio of Favour Tumba — Backend & AI Developer building APIs and AI-powered systems. Projects update automatically from GitHub.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0d1117;
-      --bg-card: #161b22;
-      --border: #30363d;
-      --text: #e6edf3;
-      --text-muted: #8b949e;
-      --accent: #58a6ff;
-      --accent-soft: rgba(88, 166, 255, 0.15);
+      --bg: #07090f;
+      --bg-raise: #0d1119;
+      --bg-card: #10151f;
+      --border: #1e2633;
+      --border-glow: #2b3a52;
+      --text: #e8edf4;
+      --muted: #93a0b4;
+      --accent: #4de3c1;          /* mint */
+      --accent-2: #7c9bff;        /* periwinkle */
+      --accent-3: #ff8a5c;        /* ember */
+      --accent-soft: rgba(77, 227, 193, 0.12);
+      --font-sans: "Space Grotesk", -apple-system, "Segoe UI", sans-serif;
+      --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Code", monospace;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 90px; }
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      line-height: 1.6;
+      font-family: var(--font-sans);
+      line-height: 1.65;
+      overflow-x: hidden;
     }
-    .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+    ::selection { background: var(--accent); color: #07090f; }
 
-    header { padding: 96px 0 64px; }
-    .eyebrow {
-      color: var(--accent);
-      font-size: 0.9rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 12px;
+    /* ---------- background canvas + cursor glow ---------- */
+    #bg-grid {
+      position: fixed; inset: 0; z-index: -2; opacity: 0.55;
     }
-    h1 { font-size: clamp(2.2rem, 6vw, 3.5rem); font-weight: 800; line-height: 1.15; }
-    .headline { color: var(--text-muted); font-size: 1.25rem; margin-top: 12px; max-width: 600px; }
-    .links { margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap; }
-    .links a {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 20px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text);
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 0.95rem;
-      transition: border-color 0.2s, background 0.2s;
+    #cursor-glow {
+      position: fixed; z-index: -1; width: 520px; height: 520px;
+      border-radius: 50%; pointer-events: none;
+      background: radial-gradient(circle, rgba(77,227,193,0.07) 0%, rgba(124,155,255,0.05) 40%, transparent 70%);
+      transform: translate(-50%, -50%);
+      transition: opacity 0.4s;
     }
-    .links a:hover { border-color: var(--accent); background: var(--accent-soft); }
-    .links a.primary { background: var(--accent); color: #0d1117; border-color: var(--accent); }
-    .links a.primary:hover { opacity: 0.9; }
+    @media (hover: none) { #cursor-glow { display: none; } }
 
-    section h2 {
-      font-size: 1.6rem;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .section-note { color: var(--text-muted); margin-bottom: 32px; font-size: 0.95rem; }
+    .container { max-width: 1060px; margin: 0 auto; padding: 0 24px; }
+    a { color: var(--accent); text-decoration: none; }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-      gap: 20px;
-      padding-bottom: 80px;
+    /* ---------- nav ---------- */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      backdrop-filter: blur(14px);
+      background: rgba(7, 9, 15, 0.72);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s;
     }
+    nav.scrolled { border-bottom-color: var(--border); }
+    .nav-inner {
+      max-width: 1060px; margin: 0 auto; padding: 16px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      font-family: var(--font-mono); font-weight: 500; font-size: 1rem;
+      color: var(--text); letter-spacing: -0.02em;
+    }
+    .logo .accent { color: var(--accent); }
+    .nav-links { display: flex; gap: 4px; list-style: none; }
+    .nav-links a {
+      color: var(--muted); font-size: 0.9rem; font-weight: 500;
+      padding: 6px 13px; border-radius: 8px; transition: color 0.2s, background 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a.active { color: var(--accent); background: var(--accent-soft); }
+    @media (max-width: 720px) {
+      .nav-links { display: none; }
+    }
+
+    /* ---------- hero ---------- */
+    header {
+      min-height: 100svh;
+      display: flex; align-items: center;
+      position: relative;
+    }
+    .hero-kicker {
+      font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent);
+      margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+    }
+    .hero-kicker::before {
+      content: ""; width: 34px; height: 1px; background: var(--accent); display: inline-block;
+    }
+    h1 {
+      font-size: clamp(2.6rem, 7.5vw, 4.6rem);
+      font-weight: 700; line-height: 1.05; letter-spacing: -0.03em;
+    }
+    h1 .gradient {
+      background: linear-gradient(100deg, var(--accent) 10%, var(--accent-2) 55%, var(--accent-3) 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .typed-line {
+      margin-top: 22px; font-family: var(--font-mono);
+      font-size: clamp(1rem, 2.6vw, 1.3rem); color: var(--muted); min-height: 1.8em;
+    }
+    .typed-line .caret {
+      display: inline-block; width: 9px; height: 1.15em; background: var(--accent);
+      vertical-align: text-bottom; margin-left: 3px;
+      animation: blink 1.05s steps(1) infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+    .hero-desc { margin-top: 24px; max-width: 560px; color: var(--muted); font-size: 1.06rem; }
+    .hero-cta { margin-top: 38px; display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 9px;
+      padding: 12px 26px; border-radius: 10px; font-weight: 600; font-size: 0.95rem;
+      border: 1px solid var(--border-glow); color: var(--text);
+      transition: transform 0.2s, border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    }
+    .btn:hover { transform: translateY(-2px); border-color: var(--accent); }
+    .btn.solid {
+      background: var(--accent); color: #06231c; border-color: var(--accent);
+      box-shadow: 0 0 0 rgba(77,227,193,0);
+    }
+    .btn.solid:hover { box-shadow: 0 8px 30px rgba(77,227,193,0.25); }
+
+    .gh-stats {
+      margin-top: 52px; display: flex; gap: 34px; flex-wrap: wrap;
+      font-family: var(--font-mono);
+    }
+    .gh-stat .num {
+      font-size: 1.7rem; font-weight: 500; color: var(--text);
+    }
+    .gh-stat .label { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+
+    .scroll-hint {
+      position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+      color: var(--muted); font-size: 1.4rem; animation: bob 2.2s ease-in-out infinite;
+    }
+    @keyframes bob { 0%,100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 9px); } }
+
+    /* ---------- sections ---------- */
+    section { padding: 110px 0; }
+    .sec-head { margin-bottom: 48px; }
+    .sec-index {
+      font-family: var(--font-mono); color: var(--accent); font-size: 0.9rem;
+    }
+    h2 { font-size: clamp(1.7rem, 4vw, 2.3rem); letter-spacing: -0.02em; margin-top: 6px; }
+    .sec-sub { color: var(--muted); margin-top: 10px; max-width: 620px; }
+
+    /* reveal on scroll */
+    .reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+
+    /* ---------- about ---------- */
+    .about-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: start; }
+    @media (max-width: 780px) { .about-grid { grid-template-columns: 1fr; } }
+    .about-text p + p { margin-top: 16px; }
+    .about-text { color: var(--muted); font-size: 1.03rem; }
+    .about-text strong { color: var(--text); font-weight: 600; }
+    .fact-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 26px; font-family: var(--font-mono); font-size: 0.88rem;
+    }
+    .fact-card .row { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px dashed var(--border); }
+    .fact-card .row:last-child { border-bottom: none; }
+    .fact-card .k { color: var(--muted); }
+    .fact-card .v { color: var(--accent); text-align: right; }
+
+    /* ---------- skills ---------- */
+    .skill-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+    .skill-group {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 24px;
+      transition: border-color 0.25s, transform 0.25s;
+    }
+    .skill-group:hover { border-color: var(--border-glow); transform: translateY(-3px); }
+    .skill-group h3 { font-size: 0.95rem; font-family: var(--font-mono); font-weight: 500; color: var(--accent-2); margin-bottom: 16px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      font-size: 0.83rem; padding: 5px 13px; border-radius: 999px;
+      background: var(--bg-raise); border: 1px solid var(--border); color: var(--muted);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .chip:hover { color: var(--accent); border-color: var(--accent); }
+
+    /* ---------- projects ---------- */
+    .proj-note { font-family: var(--font-mono); font-size: 0.82rem; color: var(--muted); display: flex; align-items: center; gap: 8px; margin-top: 14px; }
+    .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(77,227,193,0.5); } 70% { box-shadow: 0 0 0 9px rgba(77,227,193,0); } 100% { box-shadow: 0 0 0 0 rgba(77,227,193,0); } }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
     .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 22px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      text-decoration: none;
-      color: var(--text);
-      transition: border-color 0.2s, transform 0.2s;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 24px; display: flex; flex-direction: column; gap: 13px;
+      color: var(--text); position: relative; overflow: hidden;
+      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
     }
-    .card:hover { border-color: var(--accent); transform: translateY(-3px); }
-    .card h3 { font-size: 1.1rem; color: var(--accent); word-break: break-word; }
-    .card p { color: var(--text-muted); font-size: 0.92rem; flex-grow: 1; }
-    .card .meta {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      flex-wrap: wrap;
+    .card::before {
+      content: ""; position: absolute; inset: 0; opacity: 0; transition: opacity 0.3s;
+      background: radial-gradient(400px circle at var(--mx, 50%) var(--my, 0%), rgba(77,227,193,0.08), transparent 45%);
+      pointer-events: none;
     }
+    .card:hover { border-color: var(--border-glow); transform: translateY(-4px); box-shadow: 0 14px 40px rgba(0,0,0,0.35); }
+    .card:hover::before { opacity: 1; }
+    .card .card-top { display: flex; justify-content: space-between; align-items: center; }
+    .card .folder { font-size: 1.5rem; }
+    .card h3 { font-size: 1.12rem; color: var(--text); word-break: break-word; }
+    .card:hover h3 { color: var(--accent); }
+    .card p { color: var(--muted); font-size: 0.92rem; flex-grow: 1; }
+    .card .meta { display: flex; align-items: center; gap: 15px; font-size: 0.82rem; color: var(--muted); flex-wrap: wrap; font-family: var(--font-mono); }
     .lang-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; vertical-align: -1px; }
     .topics { display: flex; gap: 6px; flex-wrap: wrap; }
-    .topic {
-      background: var(--accent-soft);
-      color: var(--accent);
-      font-size: 0.75rem;
-      padding: 2px 10px;
-      border-radius: 999px;
+    .topic { background: var(--accent-soft); color: var(--accent); font-size: 0.73rem; padding: 2px 11px; border-radius: 999px; font-family: var(--font-mono); }
+    .featured-badge {
+      font-size: 0.7rem; font-family: var(--font-mono); color: var(--accent-3);
+      border: 1px solid rgba(255,138,92,0.4); padding: 2px 9px; border-radius: 999px;
     }
-    .status { color: var(--text-muted); padding: 40px 0 80px; text-align: center; }
+    .status { color: var(--muted); padding: 30px 0; font-family: var(--font-mono); font-size: 0.9rem; }
+
+    /* ---------- timeline (experience + education) ---------- */
+    .timeline { position: relative; padding-left: 34px; }
+    .timeline::before {
+      content: ""; position: absolute; left: 8px; top: 6px; bottom: 6px; width: 2px;
+      background: linear-gradient(var(--accent), var(--accent-2), transparent);
+    }
+    .t-item { position: relative; padding-bottom: 42px; }
+    .t-item:last-child { padding-bottom: 0; }
+    .t-item::before {
+      content: ""; position: absolute; left: -32px; top: 7px; width: 14px; height: 14px;
+      border-radius: 50%; background: var(--bg); border: 3px solid var(--accent);
+    }
+    .t-date { font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent); }
+    .t-item h3 { font-size: 1.15rem; margin-top: 4px; }
+    .t-item .org { color: var(--accent-2); font-size: 0.95rem; }
+    .t-item p { color: var(--muted); margin-top: 8px; max-width: 640px; font-size: 0.97rem; }
+
+    /* ---------- certifications ---------- */
+    .cert-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 18px; }
+    .cert {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 22px;
+      display: flex; gap: 15px; align-items: flex-start;
+      transition: border-color 0.25s, transform 0.25s; color: var(--text);
+    }
+    .cert:hover { border-color: var(--accent-2); transform: translateY(-3px); }
+    .cert .icon { font-size: 1.6rem; }
+    .cert h3 { font-size: 0.98rem; }
+    .cert .issuer { color: var(--muted); font-size: 0.85rem; font-family: var(--font-mono); margin-top: 3px; }
+
+    /* ---------- contact ---------- */
+    #contact { text-align: center; padding-bottom: 130px; }
+    #contact .sec-head { margin-bottom: 26px; }
+    #contact .sec-sub { margin-left: auto; margin-right: auto; }
+    .contact-links { margin-top: 40px; display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
 
     footer {
-      border-top: 1px solid var(--border);
-      padding: 32px 0;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      text-align: center;
+      border-top: 1px solid var(--border); padding: 34px 0;
+      color: var(--muted); font-size: 0.87rem; text-align: center; font-family: var(--font-mono);
     }
-    footer a { color: var(--accent); text-decoration: none; }
+    #to-top {
+      position: fixed; right: 26px; bottom: 26px; z-index: 40;
+      width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--border-glow);
+      background: var(--bg-card); color: var(--accent); font-size: 1.1rem; cursor: pointer;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s, transform 0.2s;
+    }
+    #to-top.show { opacity: 1; pointer-events: auto; }
+    #to-top:hover { transform: translateY(-3px); }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .reveal { transition: none; opacity: 1; transform: none; }
+      .scroll-hint, .pulse, .caret { animation: none; }
+    }
   </style>
 </head>
 <body>
-  <header class="container">
-    <div class="eyebrow">Hello, I'm</div>
-    <h1>Favour Tumba</h1>
-    <p class="headline">Backend &amp; AI Developer — I build APIs and AI-powered systems, like document-intelligence pipelines with retrieval-augmented generation.</p>
-    <div class="links">
-      <a class="primary" href="https://github.com/tumbafavour" target="_blank" rel="noopener">GitHub</a>
-      <a href="mailto:tumbafavour1@gmail.com">Email me</a>
+  <canvas id="bg-grid"></canvas>
+  <div id="cursor-glow"></div>
+
+  <nav id="nav">
+    <div class="nav-inner">
+      <a class="logo" href="#top">favour<span class="accent">.tumba</span><span class="accent">()</span></a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#journey">Journey</a></li>
+        <li><a href="#certs">Certifications</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
     </div>
+  </nav>
+
+  <header id="top">
+    <div class="container">
+      <div class="hero-kicker">Hi, my name is</div>
+      <h1>Favour Tumba.<br><span class="gradient">I build intelligent systems.</span></h1>
+      <div class="typed-line"><span id="typed"></span><span class="caret"></span></div>
+      <p class="hero-desc" id="hero-desc"></p>
+      <div class="hero-cta">
+        <a class="btn solid" href="#projects">See my work</a>
+        <a class="btn" href="#contact">Get in touch</a>
+      </div>
+      <div class="gh-stats" id="gh-stats" aria-live="polite"></div>
+    </div>
+    <div class="scroll-hint">▾</div>
   </header>
 
-  <main class="container">
-    <section>
-      <h2>Projects</h2>
-      <p class="section-note" id="note">Pulled live from GitHub — this page updates itself whenever I publish a new project.</p>
-      <div class="status" id="status">Loading projects…</div>
+  <main>
+    <section id="about" class="container">
+      <div class="sec-head reveal">
+        <div class="sec-index">01</div>
+        <h2>About me</h2>
+      </div>
+      <div class="about-grid">
+        <div class="about-text reveal" id="about-text"></div>
+        <div class="fact-card reveal" id="fact-card"></div>
+      </div>
+    </section>
+
+    <section id="skills" class="container">
+      <div class="sec-head reveal">
+        <div class="sec-index">02</div>
+        <h2>Skills &amp; tools</h2>
+        <p class="sec-sub">The stack I work with — always growing.</p>
+      </div>
+      <div class="skill-groups" id="skill-groups"></div>
+    </section>
+
+    <section id="projects" class="container">
+      <div class="sec-head reveal">
+        <div class="sec-index">03</div>
+        <h2>Projects</h2>
+        <p class="sec-sub">Everything below is pulled live from my GitHub — when I ship something new, it shows up here on its own.</p>
+        <div class="proj-note"><span class="pulse"></span><span id="proj-note-text">synced with github.com/tumbafavour</span></div>
+      </div>
+      <div class="status" id="status">Loading projects from GitHub…</div>
       <div class="grid" id="grid"></div>
+    </section>
+
+    <section id="journey" class="container">
+      <div class="sec-head reveal">
+        <div class="sec-index">04</div>
+        <h2>My journey</h2>
+        <p class="sec-sub">Experience and education so far.</p>
+      </div>
+      <div class="timeline" id="timeline"></div>
+    </section>
+
+    <section id="certs" class="container">
+      <div class="sec-head reveal">
+        <div class="sec-index">05</div>
+        <h2>Certifications</h2>
+      </div>
+      <div class="cert-grid" id="cert-grid"></div>
+    </section>
+
+    <section id="contact" class="container">
+      <div class="sec-head reveal">
+        <div class="sec-index">06</div>
+        <h2>Let's build something</h2>
+      </div>
+      <p class="sec-sub reveal">My inbox is always open — whether it's a project, a role, or just a question about something I've built, I'll get back to you.</p>
+      <div class="contact-links reveal" id="contact-links"></div>
     </section>
   </main>
 
   <footer>
     <div class="container">
-      © <span id="year"></span> Favour Tumba · Auto-updated from <a href="https://github.com/tumbafavour" target="_blank" rel="noopener">GitHub</a>
+      © <span id="year"></span> Favour Tumba — designed &amp; built by me · auto-synced with <a href="https://github.com/tumbafavour" target="_blank" rel="noopener">GitHub</a>
     </div>
   </footer>
 
+  <button id="to-top" aria-label="Back to top">↑</button>
+
   <script>
-    const USERNAME = "tumbafavour";
-    const SHOWCASE_TOPIC = "portfolio"; // repos tagged with this topic are featured
+    /* ================================================================
+       EDIT ME — everything personal lives in this one object.
+       Update it as you grow; the page renders itself from it.
+       ================================================================ */
+    const PROFILE = {
+      username: "tumbafavour",
+      showcaseTopic: "portfolio",   // tag repos with this topic to feature them
+      email: "tumbafavour1@gmail.com",
+
+      typedRoles: [
+        "Backend Developer",
+        "AI / RAG Systems Builder",
+        "API Designer",
+        "Lifelong Learner"
+      ],
+
+      heroDesc: "I'm a developer focused on backend engineering and applied AI — currently building a document-intelligence platform: a retrieval-augmented generation API that lets you ask questions about your own documents.",
+
+      about: [
+        `I'm <strong>Favour Tumba</strong>, a backend and AI developer. My flagship project is a <strong>document-intelligence RAG API</strong> — upload documents, ask questions in plain language, get grounded answers.`,
+        `I care about building things properly: clean APIs, honest READMEs, and projects that actually run. Every project I publish lands on this page automatically, so what you see here is always my latest work.`,
+        `Right now I'm going deep on <strong>Python, FastAPI, and vector search</strong> — and this portfolio grows as I do.`
+      ],
+
+      facts: [
+        { k: "location", v: "Nigeria" },            // EDIT: your city/country
+        { k: "focus", v: "Backend + AI" },
+        { k: "currently_building", v: "doc-intelligence" },
+        { k: "open_to", v: "internships / junior roles" },
+        { k: "status", v: "available" }
+      ],
+
+      skills: [
+        { group: "// languages", items: ["Python", "SQL", "JavaScript", "HTML & CSS"] },
+        { group: "// backend & AI", items: ["FastAPI", "REST APIs", "RAG pipelines", "Vector search", "PostgreSQL"] },
+        { group: "// tools & practices", items: ["Git & GitHub", "Docker", "Linux basics", "Testing", "API documentation"] }
+      ],
+
+      /* Add newest first. */
+      journey: [
+        {
+          date: "2026 — present",
+          title: "Independent Projects — Backend & AI",
+          org: "Self-directed",
+          desc: "Designing and shipping my own systems, starting with a document-intelligence RAG API (FastAPI, embeddings, vector retrieval). Building in public on GitHub."
+        },
+        {
+          date: "EDIT ME",
+          title: "Your education — degree / program",
+          org: "Your school or bootcamp",
+          desc: "Add your education here: institution, field of study, dates, and anything notable (projects, awards, coursework)."
+        }
+        /* When you get your first internship or job, add it above like:
+        {
+          date: "2026 — present",
+          title: "Backend Developer Intern",
+          org: "Company Name",
+          desc: "What you built and the impact it had."
+        },
+        */
+      ],
+
+      certifications: [
+        {
+          icon: "🎓",
+          name: "Your first certification goes here",
+          issuer: "e.g. freeCodeCamp · Coursera · AWS",
+          url: ""   // link to the credential when you have one
+        }
+        /* Add more like:
+        { icon: "☁️", name: "AWS Certified Cloud Practitioner", issuer: "Amazon Web Services", url: "https://..." },
+        */
+      ],
+
+      socials: [
+        { label: "GitHub", url: "https://github.com/tumbafavour", solid: false },
+        { label: "Email me", url: "mailto:tumbafavour1@gmail.com", solid: true }
+        /* Add these when you create them:
+        { label: "LinkedIn", url: "https://linkedin.com/in/your-handle" },
+        { label: "X / Twitter", url: "https://x.com/your-handle" },
+        { label: "Résumé (PDF)", url: "resume.pdf" },   // drop resume.pdf in this folder
+        { label: "Blog", url: "https://..." },
+        */
+      ]
+    };
+    /* ================== end of EDIT ME zone ======================= */
 
     const LANG_COLORS = {
       Python: "#3572A5", JavaScript: "#f1e05a", TypeScript: "#3178c6",
@@ -150,73 +469,165 @@
       Shell: "#89e051", "Jupyter Notebook": "#DA5B0B", Dockerfile: "#384d54"
     };
 
-    document.getElementById("year").textContent = new Date().getFullYear();
+    const $ = (id) => document.getElementById(id);
+    const esc = (s) => { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; };
 
-    async function loadProjects() {
-      const status = document.getElementById("status");
-      const grid = document.getElementById("grid");
+    /* ---------- render static sections from PROFILE ---------- */
+    $("year").textContent = new Date().getFullYear();
+    $("hero-desc").textContent = PROFILE.heroDesc;
+    $("about-text").innerHTML = PROFILE.about.map(p => `<p>${p}</p>`).join("");
+    $("fact-card").innerHTML = PROFILE.facts
+      .map(f => `<div class="row"><span class="k">${esc(f.k)}:</span><span class="v">"${esc(f.v)}"</span></div>`).join("");
+    $("skill-groups").innerHTML = PROFILE.skills
+      .map(g => `<div class="skill-group reveal"><h3>${esc(g.group)}</h3><div class="chips">${g.items.map(i => `<span class="chip">${esc(i)}</span>`).join("")}</div></div>`).join("");
+    $("timeline").innerHTML = PROFILE.journey
+      .map(j => `<div class="t-item reveal"><div class="t-date">${esc(j.date)}</div><h3>${esc(j.title)}</h3><div class="org">${esc(j.org)}</div><p>${esc(j.desc)}</p></div>`).join("");
+    $("cert-grid").innerHTML = PROFILE.certifications
+      .map(c => {
+        const inner = `<span class="icon">${c.icon}</span><div><h3>${esc(c.name)}</h3><div class="issuer">${esc(c.issuer)}</div></div>`;
+        return c.url
+          ? `<a class="cert reveal" href="${c.url}" target="_blank" rel="noopener">${inner}</a>`
+          : `<div class="cert reveal">${inner}</div>`;
+      }).join("");
+    $("contact-links").innerHTML = PROFILE.socials
+      .map(s => `<a class="btn${s.solid ? " solid" : ""}" href="${s.url}" ${s.url.startsWith("http") ? 'target="_blank" rel="noopener"' : ""}>${esc(s.label)}</a>`).join("");
+    $("proj-note-text").textContent = `synced with github.com/${PROFILE.username}`;
+
+    /* ---------- typing effect ---------- */
+    (function typeLoop() {
+      const el = $("typed");
+      const roles = PROFILE.typedRoles;
+      let ri = 0, ci = 0, deleting = false;
+      function tick() {
+        const word = roles[ri];
+        el.textContent = word.slice(0, ci);
+        let delay = deleting ? 38 : 72;
+        if (!deleting && ci === word.length) { delay = 1900; deleting = true; }
+        else if (deleting && ci === 0) { deleting = false; ri = (ri + 1) % roles.length; delay = 350; }
+        ci += deleting ? -1 : 1;
+        setTimeout(tick, delay);
+      }
+      tick();
+    })();
+
+    /* ---------- animated dot-grid background ---------- */
+    (function bgGrid() {
+      const canvas = $("bg-grid"), ctx = canvas.getContext("2d");
+      let w, h, dots = [], mouse = { x: -9999, y: -9999 };
+      const GAP = 42;
+      function resize() {
+        w = canvas.width = innerWidth; h = canvas.height = innerHeight;
+        dots = [];
+        for (let x = GAP / 2; x < w; x += GAP)
+          for (let y = GAP / 2; y < h; y += GAP)
+            dots.push({ x, y });
+      }
+      addEventListener("resize", resize); resize();
+      addEventListener("mousemove", e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+      const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      function draw(t) {
+        ctx.clearRect(0, 0, w, h);
+        for (const d of dots) {
+          const dx = d.x - mouse.x, dy = d.y - mouse.y;
+          const dist = Math.hypot(dx, dy);
+          const boost = Math.max(0, 1 - dist / 240);
+          const twinkle = reduced ? 0 : 0.35 + 0.25 * Math.sin(t / 1400 + d.x * 0.05 + d.y * 0.03);
+          const alpha = Math.min(1, 0.05 + twinkle * 0.07 + boost * 0.55);
+          ctx.beginPath();
+          ctx.arc(d.x, d.y, 1 + boost * 1.6, 0, Math.PI * 2);
+          ctx.fillStyle = boost > 0.02 ? `rgba(77,227,193,${alpha})` : `rgba(140,160,190,${alpha})`;
+          ctx.fill();
+        }
+        requestAnimationFrame(draw);
+      }
+      requestAnimationFrame(draw);
+    })();
+
+    /* ---------- cursor glow ---------- */
+    addEventListener("mousemove", e => {
+      const g = $("cursor-glow");
+      g.style.left = e.clientX + "px"; g.style.top = e.clientY + "px";
+    });
+
+    /* ---------- card spotlight follows mouse ---------- */
+    document.addEventListener("mousemove", e => {
+      const card = e.target.closest(".card");
+      if (!card) return;
+      const r = card.getBoundingClientRect();
+      card.style.setProperty("--mx", (e.clientX - r.left) + "px");
+      card.style.setProperty("--my", (e.clientY - r.top) + "px");
+    });
+
+    /* ---------- nav: scrolled state, scroll-spy, back-to-top ---------- */
+    const sections = [...document.querySelectorAll("section[id]")];
+    const navAnchors = [...document.querySelectorAll(".nav-links a")];
+    addEventListener("scroll", () => {
+      $("nav").classList.toggle("scrolled", scrollY > 40);
+      $("to-top").classList.toggle("show", scrollY > 700);
+      const pos = scrollY + 120;
+      let current = "";
+      for (const s of sections) if (s.offsetTop <= pos) current = s.id;
+      navAnchors.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + current));
+    }, { passive: true });
+    $("to-top").addEventListener("click", () => scrollTo({ top: 0, behavior: "smooth" }));
+
+    /* ---------- reveal on scroll ---------- */
+    const io = new IntersectionObserver(entries => {
+      for (const e of entries) if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+    }, { threshold: 0.12 });
+    function observeReveals() { document.querySelectorAll(".reveal:not(.in)").forEach(el => io.observe(el)); }
+    observeReveals();
+
+    /* ---------- GitHub: live stats + projects ---------- */
+    async function loadGitHub() {
+      const status = $("status"), grid = $("grid");
       try {
-        const res = await fetch(`https://api.github.com/users/${USERNAME}/repos?per_page=100&sort=pushed`);
-        if (!res.ok) throw new Error(`GitHub API returned ${res.status}`);
-        let repos = await res.json();
+        const [userRes, repoRes] = await Promise.all([
+          fetch(`https://api.github.com/users/${PROFILE.username}`),
+          fetch(`https://api.github.com/users/${PROFILE.username}/repos?per_page=100&sort=pushed`)
+        ]);
+        if (!userRes.ok || !repoRes.ok) throw new Error("GitHub API error");
+        const user = await userRes.json();
+        let repos = await repoRes.json();
 
-        repos = repos.filter(r => !r.fork && r.name.toLowerCase() !== `${USERNAME}.github.io`);
+        repos = repos.filter(r => !r.fork && r.name.toLowerCase() !== `${PROFILE.username}.github.io`);
+        const totalStars = repos.reduce((n, r) => n + r.stargazers_count, 0);
 
-        // Prefer repos tagged with the showcase topic; fall back to everything.
-        const tagged = repos.filter(r => (r.topics || []).includes(SHOWCASE_TOPIC));
-        if (tagged.length > 0) {
-          repos = tagged;
-        } else {
-          document.getElementById("note").textContent =
-            "Pulled live from GitHub — showing recent projects.";
-        }
+        $("gh-stats").innerHTML = [
+          { num: repos.length, label: "projects" },
+          { num: totalStars, label: "stars earned" },
+          { num: user.followers, label: "followers" }
+        ].map(s => `<div class="gh-stat"><div class="num">${s.num}</div><div class="label">${s.label}</div></div>`).join("");
 
-        if (repos.length === 0) {
-          status.textContent = "No projects published yet — check back soon!";
-          return;
-        }
+        const tagged = repos.filter(r => (r.topics || []).includes(PROFILE.showcaseTopic));
+        const showing = tagged.length > 0 ? tagged : repos;
 
+        if (showing.length === 0) { status.textContent = "No projects published yet — check back soon."; return; }
         status.remove();
-        for (const repo of repos) {
-          const card = document.createElement("a");
-          card.className = "card";
-          card.href = repo.html_url;
-          card.target = "_blank";
-          card.rel = "noopener";
 
-          const topics = (repo.topics || [])
-            .filter(t => t !== SHOWCASE_TOPIC)
-            .slice(0, 4)
-            .map(t => `<span class="topic">${t}</span>`)
-            .join("");
-
-          const langDot = repo.language
-            ? `<span><span class="lang-dot" style="background:${LANG_COLORS[repo.language] || "#8b949e"}"></span>${repo.language}</span>`
-            : "";
+        grid.innerHTML = showing.map(repo => {
+          const topics = (repo.topics || []).filter(t => t !== PROFILE.showcaseTopic).slice(0, 4)
+            .map(t => `<span class="topic">${esc(t)}</span>`).join("");
+          const lang = repo.language
+            ? `<span><span class="lang-dot" style="background:${LANG_COLORS[repo.language] || "#8b949e"}"></span>${esc(repo.language)}</span>` : "";
           const stars = repo.stargazers_count > 0 ? `<span>★ ${repo.stargazers_count}</span>` : "";
-          const updated = `<span>Updated ${new Date(repo.pushed_at).toLocaleDateString(undefined, { month: "short", year: "numeric" })}</span>`;
-
-          card.innerHTML = `
-            <h3>${repo.name}</h3>
-            <p>${repo.description ? escapeHtml(repo.description) : "No description yet."}</p>
+          const updated = `<span>${new Date(repo.pushed_at).toLocaleDateString(undefined, { month: "short", year: "numeric" })}</span>`;
+          const badge = tagged.length > 0 ? `<span class="featured-badge">featured</span>` : "";
+          return `<a class="card reveal" href="${repo.html_url}" target="_blank" rel="noopener">
+            <div class="card-top"><span class="folder">🗂️</span>${badge}</div>
+            <h3>${esc(repo.name)}</h3>
+            <p>${repo.description ? esc(repo.description) : "No description yet."}</p>
             ${topics ? `<div class="topics">${topics}</div>` : ""}
-            <div class="meta">${langDot}${stars}${updated}</div>
-          `;
-          grid.appendChild(card);
-        }
+            <div class="meta">${lang}${stars}${updated}</div>
+          </a>`;
+        }).join("");
+        observeReveals();
       } catch (err) {
-        status.textContent = "Couldn't load projects right now — visit github.com/" + USERNAME + " instead.";
+        status.textContent = `Couldn't reach GitHub right now — see github.com/${PROFILE.username} instead.`;
         console.error(err);
       }
     }
-
-    function escapeHtml(str) {
-      const div = document.createElement("div");
-      div.textContent = str;
-      return div.innerHTML;
-    }
-
-    loadProjects();
+    loadGitHub();
   </script>
 </body>
 </html>
