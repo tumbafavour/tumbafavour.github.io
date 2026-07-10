@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Favour Tumba — Backend & AI Developer</title>
+  <meta name="description" content="Portfolio of Favour Tumba, Backend & AI Developer. Projects update automatically from GitHub.">
+  <style>
+    :root {
+      --bg: #0d1117;
+      --bg-card: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #58a6ff;
+      --accent-soft: rgba(88, 166, 255, 0.15);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+    }
+    .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+    header { padding: 96px 0 64px; }
+    .eyebrow {
+      color: var(--accent);
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    h1 { font-size: clamp(2.2rem, 6vw, 3.5rem); font-weight: 800; line-height: 1.15; }
+    .headline { color: var(--text-muted); font-size: 1.25rem; margin-top: 12px; max-width: 600px; }
+    .links { margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .links a:hover { border-color: var(--accent); background: var(--accent-soft); }
+    .links a.primary { background: var(--accent); color: #0d1117; border-color: var(--accent); }
+    .links a.primary:hover { opacity: 0.9; }
+
+    section h2 {
+      font-size: 1.6rem;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-note { color: var(--text-muted); margin-bottom: 32px; font-size: 0.95rem; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 20px;
+      padding-bottom: 80px;
+    }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .card:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .card h3 { font-size: 1.1rem; color: var(--accent); word-break: break-word; }
+    .card p { color: var(--text-muted); font-size: 0.92rem; flex-grow: 1; }
+    .card .meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+    }
+    .lang-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; vertical-align: -1px; }
+    .topics { display: flex; gap: 6px; flex-wrap: wrap; }
+    .topic {
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.75rem;
+      padding: 2px 10px;
+      border-radius: 999px;
+    }
+    .status { color: var(--text-muted); padding: 40px 0 80px; text-align: center; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 0;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <header class="container">
+    <div class="eyebrow">Hello, I'm</div>
+    <h1>Favour Tumba</h1>
+    <p class="headline">Backend &amp; AI Developer — I build APIs and AI-powered systems, like document-intelligence pipelines with retrieval-augmented generation.</p>
+    <div class="links">
+      <a class="primary" href="https://github.com/tumbafavour" target="_blank" rel="noopener">GitHub</a>
+      <a href="mailto:tumbafavour1@gmail.com">Email me</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section>
+      <h2>Projects</h2>
+      <p class="section-note" id="note">Pulled live from GitHub — this page updates itself whenever I publish a new project.</p>
+      <div class="status" id="status">Loading projects…</div>
+      <div class="grid" id="grid"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      © <span id="year"></span> Favour Tumba · Auto-updated from <a href="https://github.com/tumbafavour" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </footer>
+
+  <script>
+    const USERNAME = "tumbafavour";
+    const SHOWCASE_TOPIC = "portfolio"; // repos tagged with this topic are featured
+
+    const LANG_COLORS = {
+      Python: "#3572A5", JavaScript: "#f1e05a", TypeScript: "#3178c6",
+      HTML: "#e34c26", CSS: "#563d7c", Java: "#b07219", "C#": "#178600",
+      C: "#555555", "C++": "#f34b7d", Go: "#00ADD8", Rust: "#dea584",
+      PHP: "#4F5D95", Ruby: "#701516", Kotlin: "#A97BFF", Swift: "#F05138",
+      Shell: "#89e051", "Jupyter Notebook": "#DA5B0B", Dockerfile: "#384d54"
+    };
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    async function loadProjects() {
+      const status = document.getElementById("status");
+      const grid = document.getElementById("grid");
+      try {
+        const res = await fetch(`https://api.github.com/users/${USERNAME}/repos?per_page=100&sort=pushed`);
+        if (!res.ok) throw new Error(`GitHub API returned ${res.status}`);
+        let repos = await res.json();
+
+        repos = repos.filter(r => !r.fork && r.name.toLowerCase() !== `${USERNAME}.github.io`);
+
+        // Prefer repos tagged with the showcase topic; fall back to everything.
+        const tagged = repos.filter(r => (r.topics || []).includes(SHOWCASE_TOPIC));
+        if (tagged.length > 0) {
+          repos = tagged;
+        } else {
+          document.getElementById("note").textContent =
+            "Pulled live from GitHub — showing recent projects.";
+        }
+
+        if (repos.length === 0) {
+          status.textContent = "No projects published yet — check back soon!";
+          return;
+        }
+
+        status.remove();
+        for (const repo of repos) {
+          const card = document.createElement("a");
+          card.className = "card";
+          card.href = repo.html_url;
+          card.target = "_blank";
+          card.rel = "noopener";
+
+          const topics = (repo.topics || [])
+            .filter(t => t !== SHOWCASE_TOPIC)
+            .slice(0, 4)
+            .map(t => `<span class="topic">${t}</span>`)
+            .join("");
+
+          const langDot = repo.language
+            ? `<span><span class="lang-dot" style="background:${LANG_COLORS[repo.language] || "#8b949e"}"></span>${repo.language}</span>`
+            : "";
+          const stars = repo.stargazers_count > 0 ? `<span>★ ${repo.stargazers_count}</span>` : "";
+          const updated = `<span>Updated ${new Date(repo.pushed_at).toLocaleDateString(undefined, { month: "short", year: "numeric" })}</span>`;
+
+          card.innerHTML = `
+            <h3>${repo.name}</h3>
+            <p>${repo.description ? escapeHtml(repo.description) : "No description yet."}</p>
+            ${topics ? `<div class="topics">${topics}</div>` : ""}
+            <div class="meta">${langDot}${stars}${updated}</div>
+          `;
+          grid.appendChild(card);
+        }
+      } catch (err) {
+        status.textContent = "Couldn't load projects right now — visit github.com/" + USERNAME + " instead.";
+        console.error(err);
+      }
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement("div");
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    loadProjects();
+  </script>
+</body>
+</html>
