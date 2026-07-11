@@ -322,7 +322,7 @@
       <div class="sec-head reveal">
         <div class="sec-index">02</div>
         <h2>Skills &amp; tools</h2>
-        <p class="sec-sub">The stack I work with — always growing.</p>
+        <p class="sec-sub">Part curated by me, part <strong style="color:var(--accent)">detected automatically from the code in my repositories</strong> — when I ship a project in a new language or tool, it earns its place here on its own.</p>
       </div>
       <div class="skill-groups" id="skill-groups"></div>
     </section>
@@ -482,7 +482,7 @@
     $("hero-desc").textContent = PROFILE.heroDesc;
     $("about-text").innerHTML = PROFILE.about.map(p => `<p>${p}</p>`).join("");
     $("fact-card").innerHTML = PROFILE.facts
-      .map(f => `<div class="row"><span class="k">${esc(f.k)}:</span><span class="v">"${esc(f.v)}"</span></div>`).join("");
+      .map(f => `<div class="row"><span class="k">${esc(f.k)}:</span><span class="v" data-k="${esc(f.k)}">"${esc(f.v)}"</span></div>`).join("");
     $("skill-groups").innerHTML = PROFILE.skills
       .map(g => `<div class="skill-group reveal"><h3>${esc(g.group)}</h3><div class="chips">${g.items.map(i => `<span class="chip">${esc(i)}</span>`).join("")}</div></div>`).join("");
     $("timeline").innerHTML = PROFILE.journey
@@ -627,12 +627,86 @@
           </a>`;
         }).join("");
         observeReveals();
+
+        // keep the "currently_building" fact fresh: newest pushed repo wins
+        const buildingEl = document.querySelector('#fact-card .v[data-k="currently_building"]');
+        if (buildingEl && repos[0]) buildingEl.textContent = `"${repos[0].name}"`;
+
+        detectSkills(repos, tagged);
       } catch (err) {
         status.textContent = `Couldn't reach GitHub right now — see github.com/${PROFILE.username} instead.`;
         console.error(err);
       }
     }
     loadGitHub();
+
+    /* ---------- auto-detected skills from repo languages + topics ----------
+       "Worth adding" rules:
+       - a language must be ≥2% of all code bytes OR appear in 2+ repos
+       - a topic must appear on 2+ repos OR on any featured repo
+       - anything already listed manually in PROFILE.skills is skipped
+       Results are cached in the visitor's browser for 24h to stay well
+       within GitHub's API rate limits. */
+    async function detectSkills(repos, tagged) {
+      const CACHE_KEY = "gh-detected-skills-v1";
+      try {
+        const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "null");
+        if (cached && Date.now() - cached.t < 24 * 60 * 60 * 1000) {
+          return renderDetected(cached.langs, cached.topics);
+        }
+      } catch { /* bad cache — refetch */ }
+
+      // language bytes across the 20 most recently pushed repos
+      const recent = repos.slice(0, 20);
+      const results = await Promise.allSettled(
+        recent.map(r => fetch(r.languages_url).then(x => x.ok ? x.json() : {}))
+      );
+      const bytes = {}, repoCount = {};
+      for (const res of results) {
+        if (res.status !== "fulfilled") continue;
+        for (const [lang, b] of Object.entries(res.value)) {
+          bytes[lang] = (bytes[lang] || 0) + b;
+          repoCount[lang] = (repoCount[lang] || 0) + 1;
+        }
+      }
+      const total = Object.values(bytes).reduce((a, b) => a + b, 0) || 1;
+      const langs = Object.keys(bytes)
+        .filter(l => bytes[l] / total >= 0.02 || repoCount[l] >= 2)
+        .sort((a, b) => bytes[b] - bytes[a]);
+
+      // topics across all repos
+      const taggedNames = new Set(tagged.map(r => r.name));
+      const topicCount = {}, topicFeatured = {};
+      for (const r of repos) {
+        for (const t of (r.topics || [])) {
+          if (t === PROFILE.showcaseTopic) continue;
+          topicCount[t] = (topicCount[t] || 0) + 1;
+          if (taggedNames.has(r.name)) topicFeatured[t] = true;
+        }
+      }
+      const topics = Object.keys(topicCount)
+        .filter(t => topicCount[t] >= 2 || topicFeatured[t])
+        .sort((a, b) => topicCount[b] - topicCount[a])
+        .slice(0, 14);
+
+      try { localStorage.setItem(CACHE_KEY, JSON.stringify({ t: Date.now(), langs, topics })); } catch {}
+      renderDetected(langs, topics);
+    }
+
+    function renderDetected(langs, topics) {
+      // skip anything already listed manually
+      const curated = new Set(PROFILE.skills.flatMap(g => g.items.map(i => i.toLowerCase())));
+      const items = [
+        ...langs.filter(l => !curated.has(l.toLowerCase())),
+        ...topics.filter(t => !curated.has(t.toLowerCase()) && !curated.has(t.replace(/-/g, " ").toLowerCase()))
+      ];
+      if (items.length === 0) return;
+      const group = document.createElement("div");
+      group.className = "skill-group reveal in";
+      group.innerHTML = `<h3>// auto-detected from my code <span class="pulse" style="display:inline-block;margin-left:6px"></span></h3>
+        <div class="chips">${items.map(i => `<span class="chip" title="detected from my GitHub repos">${esc(i)}</span>`).join("")}</div>`;
+      $("skill-groups").appendChild(group);
+    }
   </script>
 </body>
 </html>
