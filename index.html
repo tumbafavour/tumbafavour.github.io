@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Favour Tumba — Backend & AI Developer</title>
-  <meta name="description" content="Portfolio of Favour Tumba — Backend & AI Developer building APIs and AI-powered systems. Projects update automatically from GitHub.">
+  <title>Favour Tumba — Software Engineer</title>
+  <meta name="description" content="Portfolio of Favour Tumba — Software Engineer building AI, backend, and full-stack systems in Python and TypeScript. Projects update automatically from GitHub.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -218,6 +218,17 @@
     }
     .status { color: var(--muted); padding: 30px 0; font-family: var(--font-mono); font-size: 0.9rem; }
 
+    /* curated highlights sit above the auto-synced grid */
+    #featured-grid { grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); }
+    .card.feature { border-color: var(--border-glow); }
+    .card.feature h3 { font-size: 1.18rem; }
+    .card .period { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); }
+    .sub-head {
+      margin: 54px 0 22px; font-family: var(--font-mono); font-size: 0.88rem;
+      color: var(--muted); display: flex; align-items: center; gap: 14px;
+    }
+    .sub-head::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
     /* ---------- timeline (experience + education) ---------- */
     .timeline { position: relative; padding-left: 34px; }
     .timeline::before {
@@ -300,6 +311,7 @@
       <div class="hero-cta">
         <a class="btn solid" href="#projects">See my work</a>
         <a class="btn" href="#contact">Get in touch</a>
+        <a class="btn" id="hero-resume" href="Favour_Tumba_Resume.pdf" target="_blank" rel="noopener">Résumé ↗</a>
       </div>
       <div class="gh-stats" id="gh-stats" aria-live="polite"></div>
     </div>
@@ -331,9 +343,11 @@
       <div class="sec-head reveal">
         <div class="sec-index">03</div>
         <h2>Projects</h2>
-        <p class="sec-sub">Everything below is pulled live from my GitHub — when I ship something new, it shows up here on its own.</p>
+        <p class="sec-sub">A few things I've built and cared about, followed by everything else pulled live from my GitHub — when I ship something new, it shows up here on its own.</p>
         <div class="proj-note"><span class="pulse"></span><span id="proj-note-text">synced with github.com/tumbafavour</span></div>
       </div>
+      <div class="grid" id="featured-grid"></div>
+      <h3 class="sub-head reveal" id="more-head" hidden>More from GitHub</h3>
       <div class="status" id="status">Loading projects from GitHub…</div>
       <div class="grid" id="grid"></div>
     </section>
@@ -383,85 +397,133 @@
       showcaseTopic: "portfolio",   // tag repos with this topic to feature them
       email: "tumbafavour1@gmail.com",
 
+      resume: "Favour_Tumba_Resume.pdf",
+
       typedRoles: [
-        "Backend Developer",
-        "AI / RAG Systems Builder",
-        "API Designer",
-        "Lifelong Learner"
+        "Software Engineer",
+        "Full-Stack Engineer",
+        "AI & LLM Systems Builder",
+        "Backend / API Designer"
       ],
 
-      heroDesc: "I'm a developer focused on backend engineering and applied AI. I like building systems from scratch to understand them deeply — a GPT in pure PyTorch, a Redis-backed distributed task queue, and a document-intelligence RAG API.",
+      heroDesc: "Software engineer at AfterQuery, building AI, backend, and full-stack systems in Python and TypeScript. I like building things from scratch to understand them properly — a GPT in pure PyTorch, a Redis-backed task queue, an LLM observability platform, and a document-intelligence RAG API.",
 
       about: [
-        `I'm <strong>Favour Tumba</strong>, a backend and AI developer. My recent work includes a <strong>GPT built from scratch in PyTorch</strong>, a <strong>Celery-like distributed task queue on Redis</strong>, and a <strong>document-intelligence RAG API</strong> — upload documents, ask questions in plain language, get grounded answers.`,
-        `I care about building things properly: clean APIs, honest READMEs, and projects that actually run. Every project I publish lands on this page automatically, so what you see here is always my latest work.`,
-        `Right now I'm going deep on <strong>Python, PyTorch, FastAPI, and distributed systems</strong> — and this portfolio grows as I do.`
+        `I'm <strong>Favour Tumba</strong>, a software engineer working across <strong>AI, backend, and full-stack</strong>. I'm currently at <strong>AfterQuery</strong>, shipping product features across React and TypeScript interfaces and Python backend services — from API design through to deployment.`,
+        `Outside of work I build systems from first principles: an <strong>LLM evaluation and observability platform</strong> that traces every call's prompt, tokens, latency and cost; a <strong>document-intelligence RAG API</strong> with hybrid retrieval and cited answers; a <strong>GPT written from scratch in PyTorch</strong>; and <strong>RelayQ</strong>, a Celery-like task queue on Redis.`,
+        `I graduated from Landmark University in <strong>August 2025</strong> with <strong>First Class Honours in Computer Science</strong> (GPA 4.57/5.00). Every project I publish lands on this page automatically, so what you see here is always my latest work.`
       ],
 
       facts: [
-        { k: "location", v: "Nigeria" },            // EDIT: your city/country
-        { k: "focus", v: "Backend + AI" },
+        { k: "location", v: "Abuja, Nigeria" },
+        { k: "role", v: "SWE @ AfterQuery" },
+        { k: "focus", v: "AI · Backend · Full-stack" },
+        { k: "education", v: "B.Sc. CS — First Class" },
         { k: "currently_building", v: "doc-intelligence" },
-        { k: "open_to", v: "internships / junior roles" },
-        { k: "status", v: "available" }
+        { k: "open_to", v: "interesting problems" }
       ],
 
       skills: [
-        { group: "// languages", items: ["Python", "SQL", "JavaScript", "HTML & CSS"] },
-        { group: "// backend & AI", items: ["FastAPI", "REST APIs", "RAG pipelines", "Vector search", "PostgreSQL"] },
-        { group: "// tools & practices", items: ["Git & GitHub", "Docker", "Linux basics", "Testing", "API documentation"] }
+        { group: "// languages", items: ["Python", "TypeScript", "JavaScript", "SQL", "Bash"] },
+        { group: "// ai & ml", items: ["Claude API", "OpenAI", "LiteLLM", "RAG", "pgvector", "LLM evaluation", "LLM observability", "scikit-learn", "pandas"] },
+        { group: "// backend & data", items: ["FastAPI", "Node.js", "REST APIs", "SQLAlchemy", "PostgreSQL", "Neon", "Redis", "Celery"] },
+        { group: "// frontend", items: ["React", "Next.js", "TanStack", "HTML5", "CSS3"] },
+        { group: "// devops & tools", items: ["Docker", "GitHub Actions", "CI/CD", "Git", "Linux", "pytest", "Streamlit"] }
+      ],
+
+      /* Curated highlights, shown above the auto-synced GitHub grid.
+         `repo` must match the GitHub repo name so it isn't listed twice. */
+      featured: [
+        {
+          repo: "LLM-Evaluation-Observability-Platform",
+          name: "LLM Evaluation & Observability Platform",
+          icon: "📊",
+          period: "2026 — present",
+          blurb: "Traces every LLM call — prompt, response, tokens, latency and cost — through a FastAPI ingestion API backed by PostgreSQL, with a Python SDK that reports traces automatically and a Streamlit dashboard charting cost and latency trends over time.",
+          stack: ["Python", "FastAPI", "PostgreSQL", "SQLAlchemy", "Streamlit"]
+        },
+        {
+          repo: "Doc-Intelligence",
+          name: "Document Intelligence API",
+          icon: "📄",
+          period: "2026 — present",
+          blurb: "Upload documents, ask questions in plain language, get answers with citations. Hybrid retrieval fuses PostgreSQL full-text search with pgvector embeddings via Reciprocal Rank Fusion, with cost and latency telemetry on every query.",
+          stack: ["Python", "FastAPI", "pgvector", "Claude API", "Docker"]
+        },
+        {
+          repo: "transformer-from-scratch",
+          name: "Transformer From Scratch",
+          icon: "🧠",
+          period: "2026",
+          blurb: "A GPT-style language model built in pure PyTorch — causal self-attention, multi-head attention and positional encoding implemented from the ground up, so none of it stays a black box.",
+          stack: ["Python", "PyTorch", "NLP"]
+        },
+        {
+          repo: "relayq",
+          name: "RelayQ",
+          icon: "⚙️",
+          period: "2026",
+          blurb: "A Celery-like distributed task queue built from scratch on Redis, with retries, exponential backoff, priorities and dead-letter queues.",
+          stack: ["Python", "Redis", "Distributed systems"]
+        },
+        {
+          repo: "heart-disease-risk-prediction",
+          name: "Heart Disease Risk Prediction",
+          icon: "🫀",
+          period: "2024 — 2025",
+          blurb: "Final year project predicting 10-year coronary heart disease risk from the Framingham Heart Study dataset (4,240 patients) — class imbalance handled with SMOTE, evaluated with ROC-AUC, served through a leakage-free scikit-learn pipeline and a Streamlit app.",
+          stack: ["Python", "scikit-learn", "pandas", "Streamlit"]
+        }
       ],
 
       /* Add newest first. */
       journey: [
         {
-          date: "2025 — present",
-          title: "Independent Projects — Backend & AI",
-          org: "Self-directed",
-          desc: "Designing and shipping my own systems, starting with a document-intelligence RAG API (FastAPI, embeddings, vector retrieval). Building in public on GitHub."
+          date: "Aug 2026 — present",
+          title: "Software Engineer",
+          org: "AfterQuery",
+          desc: "Building and shipping full-stack product features across React and TypeScript interfaces and Python backend services, working from API design through to deployment, alongside code review and automated testing in a distributed team. Promoted from Mid-Level Full-Stack Engineer."
         },
         {
-          date: "2024",
-          title: "Data Analyst Intern",
+          date: "Apr 2026 — present",
+          title: "Software Engineer",
+          org: "Anazemma Global Enterprises Nigeria Limited",
+          desc: "Maintaining the company's office server, website and wider IT infrastructure, and supporting data collection, cleaning and analysis workflows for the business."
+        },
+        {
+          date: "Mar 2024 — Sep 2024",
+          title: "IT Intern",
           org: "National Information Technology Development Agency (NITDA)",
-          desc: "Developed automated Python applications and AI/ML solutions to optimize data processing, API integrations, and workflow efficiency"
+          desc: "Wrote Python scripts to organise, sort and filter operational data — improving data management efficiency by 25% and team data accessibility by 30% — and helped streamline team workflows alongside public digital literacy initiatives."
         },
         {
-          date: "2021 — 2025",
-          title: "Bachelor of Science (B.Sc.) in Computer Science",
-          org: "Landmark University",
-          desc: "First Class Honours (CGPA: 4.57/5.00) — Landmark University, Nigeria."
-        },
-
+          date: "2021 — Aug 2025",
+          title: "B.Sc. Computer Science",
+          org: "Landmark University, Nigeria",
+          desc: "Graduated August 2025 with First Class Honours (GPA: 4.57/5.00). Concentrations in Artificial Intelligence and Python Programming."
+        }
       ],
 
       certifications: [
         {
           icon: "🎓",
-          name: "Python for Data Science, AI & Development",
-          issuer: "Coursera / IBM",
-          url: "https://coursera.org/share/2d457c8efbf5b3a6ec965783407b37ee"   // link to the credential when you have one
+          name: "Supervised Machine Learning: Regression and Classification",
+          issuer: "DeepLearning.AI & Stanford · Jan 2026",
+          url: "https://coursera.org/share/099f01dc41be76a3d7e82526a4e3f9a6"
         },
         {
           icon: "🎓",
-          name: "Supervised Machine Learning: Regression and Classification",
-          issuer: "Coursera / DeepLearning.AI",
-          url: "https://coursera.org/share/099f01dc41be76a3d7e82526a4e3f9a6"   // link to the credential when you have one
-        },
-        /* Add more like:
-        { icon: "☁️", name: "AWS Certified Cloud Practitioner", issuer: "Amazon Web Services", url: "https://..." },
-        */
+          name: "Python for Data Science, AI & Development",
+          issuer: "IBM · Jun 2026",
+          url: "https://coursera.org/share/2d457c8efbf5b3a6ec965783407b37ee"
+        }
       ],
 
       socials: [
-        { label: "GitHub", url: "https://github.com/tumbafavour", solid: false },
-        { label: "Email me", url: "mailto:tumbafavour1@gmail.com", solid: true }
-        /* Add these when you create them:
-        { label: "LinkedIn", url: "https://linkedin.com/in/your-handle" },
-        { label: "X / Twitter", url: "https://x.com/your-handle" },
-        { label: "Résumé (PDF)", url: "resume.pdf" },   // drop resume.pdf in this folder
-        { label: "Blog", url: "https://..." },
-        */
+        { label: "Email me", url: "mailto:tumbafavour1@gmail.com", solid: true },
+        { label: "LinkedIn", url: "https://linkedin.com/in/favour-tumba" },
+        { label: "GitHub", url: "https://github.com/tumbafavour" },
+        { label: "Résumé (PDF)", url: "Favour_Tumba_Resume.pdf" }
       ]
     };
     /* ================== end of EDIT ME zone ======================= */
@@ -495,8 +557,21 @@
           : `<div class="cert reveal">${inner}</div>`;
       }).join("");
     $("contact-links").innerHTML = PROFILE.socials
-      .map(s => `<a class="btn${s.solid ? " solid" : ""}" href="${s.url}" ${s.url.startsWith("http") ? 'target="_blank" rel="noopener"' : ""}>${esc(s.label)}</a>`).join("");
+      .map(s => {
+        const newTab = !s.url.startsWith("mailto:");   // PDFs and profiles open alongside the site
+        return `<a class="btn${s.solid ? " solid" : ""}" href="${s.url}" ${newTab ? 'target="_blank" rel="noopener"' : ""}>${esc(s.label)}</a>`;
+      }).join("");
     $("proj-note-text").textContent = `synced with github.com/${PROFILE.username}`;
+    $("hero-resume").href = PROFILE.resume;
+
+    /* ---------- curated highlights ---------- */
+    $("featured-grid").innerHTML = PROFILE.featured.map(f => `
+      <a class="card feature reveal" href="https://github.com/${PROFILE.username}/${f.repo}" target="_blank" rel="noopener">
+        <div class="card-top"><span class="folder">${f.icon}</span><span class="period">${esc(f.period)}</span></div>
+        <h3>${esc(f.name)}</h3>
+        <p>${esc(f.blurb)}</p>
+        <div class="topics">${f.stack.map(s => `<span class="topic">${esc(s)}</span>`).join("")}</div>
+      </a>`).join("");
 
     /* ---------- typing effect ---------- */
     (function typeLoop() {
@@ -605,10 +680,13 @@
         ].map(s => `<div class="gh-stat"><div class="num">${s.num}</div><div class="label">${s.label}</div></div>`).join("");
 
         const tagged = repos.filter(r => (r.topics || []).includes(PROFILE.showcaseTopic));
-        const showing = tagged.length > 0 ? tagged : repos;
+        // anything already hand-written into PROFILE.featured shouldn't appear twice
+        const curated = new Set(PROFILE.featured.map(f => f.repo.toLowerCase()));
+        const showing = (tagged.length > 0 ? tagged : repos).filter(r => !curated.has(r.name.toLowerCase()));
 
-        if (showing.length === 0) { status.textContent = "No projects published yet — check back soon."; return; }
+        if (showing.length === 0) { status.remove(); return; }
         status.remove();
+        $("more-head").hidden = false;
 
         grid.innerHTML = showing.map(repo => {
           const topics = (repo.topics || []).filter(t => t !== PROFILE.showcaseTopic).slice(0, 4)
@@ -628,9 +706,11 @@
         }).join("");
         observeReveals();
 
-        // keep the "currently_building" fact fresh: newest pushed repo wins
+        // keep the "currently_building" fact fresh: most recently pushed featured
+        // repo wins, falling back to the newest repo of any kind
         const buildingEl = document.querySelector('#fact-card .v[data-k="currently_building"]');
-        if (buildingEl && repos[0]) buildingEl.textContent = `"${repos[0].name}"`;
+        const newest = repos.find(r => curated.has(r.name.toLowerCase())) || repos[0];
+        if (buildingEl && newest) buildingEl.textContent = `"${newest.name}"`;
 
         detectSkills(repos, tagged);
       } catch (err) {
