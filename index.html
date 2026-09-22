@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Favour Tumba — Software Engineer</title>
   <meta name="description" content="Favour Tumba is a software engineer building AI, backend and full-stack systems in Python and TypeScript — LLM observability, retrieval-augmented APIs and production services.">
-  <meta name="theme-color" content="#FAF9F7" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0C0D10" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#05060A">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Favour Tumba — Software Engineer">
   <meta property="og:description" content="Building AI, backend and full-stack systems in Python and TypeScript.">
@@ -14,321 +13,369 @@
   <link rel="canonical" href="https://tumbafavour.github.io">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* ------------------------------------------------------------------
-       Tokens. Light is the primary theme; dark is a restrained
-       counterpart rather than a separate personality.
-       ------------------------------------------------------------------ */
+    /* ==================================================================
+       Liquid Glass.
+
+       Apple's own glass recipe, measured from apple.com's local nav:
+         background rgba(255,255,255,.10)
+         border     1px solid rgba(217,207,207,.25)
+         backdrop   blur(20px) saturate(1.8)
+       Type and controls follow apple.com too: SF Pro with negative
+       tracking, #0071E3 fills, capsules at radius 980px.
+
+       What makes it read as glass rather than a frosted rectangle:
+         1. an ambient colour field behind it, so there is something to
+            refract (.field, fixed, so it flows under content on scroll)
+         2. a LENS RIM - a band of extra blur + saturation masked to the
+            outer edge only, because a real lens bends light hardest at
+            its edge (.glass::before, mask-composite: exclude)
+         3. a specular top edge, as inset box-shadow
+         4. a highlight that tracks the pointer (.glass::after)
+       ================================================================== */
     :root {
-      --paper:       #FAF9F7;
-      --paper-raise: #FFFFFF;
-      --ink:         #16181D;
-      --ink-soft:    #3A3F49;
-      --muted:       #5E6573;
-      --line:        #E4E0D9;
-      --line-strong: #CFC9BF;
-      --accent:      #1F3D63;
-      --accent-soft: rgba(31, 61, 99, 0.07);
-      --shadow:      0 1px 2px rgba(20,24,31,0.04), 0 10px 28px rgba(20,24,31,0.05);
+      --sans: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont,
+              "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
 
-      --serif: "Newsreader", Georgia, "Times New Roman", serif;
-      --sans:  "Inter", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
-      --mono:  "IBM Plex Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+      --ground:   #05060A;
+      --on:       #F5F5F7;   /* Apple's off-white */
+      --on-2:     #A1A1A6;   /* Apple's secondary on dark */
+      --accent:   #2997FF;   /* Apple link blue on dark */
+      --fill:     #0071E3;   /* Apple button blue */
 
-      --wrap: 1080px;
-      --gutter: 24px;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --paper:       #0C0D10;
-        --paper-raise: #131519;
-        --ink:         #E9E6E1;
-        --ink-soft:    #BDBFC6;
-        --muted:       #8A8F98;
-        --line:        #22252B;
-        --line-strong: #343941;
-        --accent:      #9DB8DA;
-        --accent-soft: rgba(157, 184, 218, 0.10);
-        --shadow:      0 1px 2px rgba(0,0,0,0.40), 0 10px 30px rgba(0,0,0,0.32);
-      }
+      --g-fill:   rgba(255, 255, 255, 0.10);
+      --g-rim:    rgba(255, 255, 255, 0.18);
+      --g-blur:   blur(22px) saturate(180%);
+
+      --r-panel: 28px;
+      --r-card:  22px;
+      --wrap: 1060px;
+      --gutter: 22px;
     }
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; scroll-padding-top: 88px; -webkit-text-size-adjust: 100%; }
+    html { scroll-behavior: smooth; scroll-padding-top: 110px; -webkit-text-size-adjust: 100%; }
     body {
-      background: var(--paper);
-      color: var(--ink);
+      background: var(--ground);
+      color: var(--on);
       font-family: var(--sans);
-      font-size: 16px;
-      line-height: 1.65;
+      font-size: 17px; line-height: 1.47; letter-spacing: -0.022em;
       -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
       overflow-x: hidden;
+      position: relative;   /* containing block for .field / .scrim */
     }
-    ::selection { background: var(--accent); color: var(--paper); }
     a { color: inherit; text-decoration: none; }
-    img { max-width: 100%; }
+    ::selection { background: var(--fill); color: #fff; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 8px; }
 
-    .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gutter); }
+    .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gutter); position: relative; z-index: 1; }
+    .skip { position: absolute; left: -9999px; top: 0; z-index: 200; background: #fff; color: #000; padding: 10px 18px; }
+    .skip:focus { left: 8px; top: 8px; border-radius: 8px; }
 
-    .skip {
-      position: absolute; left: -9999px; top: 0; z-index: 100;
-      background: var(--ink); color: var(--paper); padding: 10px 18px; border-radius: 0 0 6px 0;
+    /* ---------- the ambient field the glass refracts ----------
+       Absolutely positioned over the whole document rather than fixed: a fixed
+       layer under ~30 backdrop-filters fails to repaint during scroll on some
+       compositors, which tears the page. Absolute also means the colour drifts
+       past as you scroll, so each glass surface refracts something different. */
+    .field { position: absolute; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; }
+    .field i {
+      position: absolute; display: block; border-radius: 50%; filter: blur(90px);
+      animation: drift 30s ease-in-out infinite alternate;
     }
-    .skip:focus { left: 0; }
-    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+    .field i:nth-child(1) { width: 62vw; height: 62vw; left: -14%; top: 0%;   background: #0A84FF; opacity: .60; animation-delay: -3s; }
+    .field i:nth-child(2) { width: 54vw; height: 54vw; right: -12%; top: 9%;  background: #6E5AE6; opacity: .52; animation-delay: -11s; }
+    .field i:nth-child(3) { width: 50vw; height: 50vw; left: 12%;  top: 26%;  background: #12B5C9; opacity: .42; animation-delay: -18s; }
+    .field i:nth-child(4) { width: 46vw; height: 46vw; right: -6%; top: 44%;  background: #FF6482; opacity: .34; animation-delay: -25s; }
+    .field i:nth-child(5) { width: 52vw; height: 52vw; left: -8%;  top: 60%;  background: #30D158; opacity: .24; animation-delay: -7s; }
+    .field i:nth-child(6) { width: 56vw; height: 56vw; right: -8%; top: 78%;  background: #5E5CE6; opacity: .40; animation-delay: -14s; }
+    @keyframes drift {
+      from { transform: translate3d(0, 0, 0) scale(1); }
+      to   { transform: translate3d(4%, -3%, 0) scale(1.12); }
+    }
+    /* scrim keeps text legible wherever the field is bright */
+    .scrim { position: absolute; inset: 0; z-index: -1; pointer-events: none; background: rgba(5, 6, 10, 0.58); }
+
+    /* ---------- the glass material ---------- */
+    .glass {
+      position: relative; isolation: isolate;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.04) 42%, rgba(255,255,255,0.09));
+      border: 1px solid var(--g-rim);
+      -webkit-backdrop-filter: var(--g-blur);
+      backdrop-filter: var(--g-blur);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.38),      /* specular top edge */
+        inset 0 -1px 0 rgba(255,255,255,0.07),     /* bounce off the bottom */
+        0 18px 44px -18px rgba(0,0,0,0.70);
+    }
+    /* Prismatic rim. A real lens bends light hardest at its edge and splits it
+       slightly, so the edge carries a cool-to-warm fringe. Drawn as a masked
+       gradient border rather than a second backdrop-filter pass: nesting
+       backdrop-filters put ~48 blur layers on the page, which tears on weaker
+       GPUs. Only .lens (below) pays for true refraction. */
+    .glass::before {
+      content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+      padding: 1.5px;
+      background: linear-gradient(140deg,
+        rgba(255,255,255,0.60) 0%,
+        rgba(180,215,255,0.20) 24%,
+        rgba(255,255,255,0.04) 50%,
+        rgba(255,195,230,0.16) 76%,
+        rgba(255,255,255,0.46) 100%);
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+              mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+              mask-composite: exclude;
+    }
+    /* true edge refraction, reserved for focal surfaces */
+    .glass.lens { --lens-w: 14px; }
+    .glass.lens > .lens-rim {
+      position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 0;
+      padding: var(--lens-w);
+      -webkit-backdrop-filter: blur(5px) saturate(250%) brightness(1.16);
+      backdrop-filter: blur(5px) saturate(250%) brightness(1.16);
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+              mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+              mask-composite: exclude;
+    }
+    .glass.lens > *:not(.lens-rim) { position: relative; z-index: 1; }
+    /* specular highlight that tracks the pointer — the "liquid" tell */
+    .glass::after {
+      content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+      background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%),
+                  rgba(255,255,255,0.20), rgba(255,255,255,0) 60%);
+      opacity: 0; transition: opacity 0.5s ease;
+    }
+    .glass:hover::after { opacity: 1; }
+    @media (hover: none) { .glass::after { display: none; } }
+
+    .glass-panel { border-radius: var(--r-panel); }
+    .glass-card  { border-radius: var(--r-card); }
+    /* thin variant for small controls: no lens rim, cheaper to composite */
+    .glass-thin {
+      background: rgba(255,255,255,0.10);
+      border: 1px solid var(--g-rim);
+      -webkit-backdrop-filter: blur(14px) saturate(180%);
+      backdrop-filter: blur(14px) saturate(180%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.28);
+    }
 
     /* ---------- type ---------- */
-    .display {
-      font-family: var(--serif); font-weight: 400;
-      letter-spacing: -0.015em; line-height: 1.1;
-    }
-    .eyebrow {
-      font-family: var(--mono); font-size: 0.74rem; font-weight: 500;
-      letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted);
-    }
-    .lede { font-size: 1.12rem; color: var(--ink-soft); max-width: 62ch; }
+    h1, h2, h3 { font-weight: 600; letter-spacing: -0.032em; line-height: 1.06; }
+    .t-hero    { font-size: clamp(2.6rem, 6.6vw, 4.8rem); }
+    .t-section { font-size: clamp(2rem, 4.4vw, 3.1rem); }
+    .t-tile    { font-size: clamp(1.3rem, 2.1vw, 1.65rem); letter-spacing: -0.026em; }
+    .eyebrow   { font-size: 0.84rem; font-weight: 500; color: var(--accent); letter-spacing: 0; }
+    .lede      { font-size: clamp(1.15rem, 2vw, 1.45rem); line-height: 1.34; letter-spacing: 0.004em; color: var(--on-2); }
 
-    /* ---------- nav ---------- */
-    .site-nav {
-      position: fixed; inset: 0 0 auto 0; z-index: 50;
-      background: color-mix(in srgb, var(--paper) 86%, transparent);
-      backdrop-filter: saturate(180%) blur(12px);
-      border-bottom: 1px solid transparent;
-      transition: border-color 0.25s ease;
-    }
-    .site-nav.scrolled { border-bottom-color: var(--line); }
-    .nav-inner { display: flex; align-items: center; gap: 24px; height: 68px; }
-    .wordmark {
-      font-family: var(--serif); font-size: 1.12rem; letter-spacing: -0.01em;
-      margin-right: auto; white-space: nowrap;
-    }
-    .nav-links { display: flex; gap: 4px; list-style: none; }
-    .nav-links a {
-      display: block; padding: 7px 12px; border-radius: 6px;
-      font-size: 0.88rem; color: var(--muted);
-      transition: color 0.18s ease, background 0.18s ease;
-    }
-    .nav-links a:hover { color: var(--ink); }
-    .nav-links a.active { color: var(--accent); background: var(--accent-soft); }
+    .band { padding: 104px 0; position: relative; }
+    .sec-head { margin-bottom: 48px; }
+    .sec-head p.sub { color: var(--on-2); margin-top: 14px; font-size: 1.14rem; line-height: 1.42; max-width: 62ch; }
 
-    .nav-toggle {
-      display: none; align-items: center; justify-content: center;
-      width: 38px; height: 38px; border-radius: 7px; cursor: pointer;
-      border: 1px solid var(--line-strong); background: var(--paper-raise); color: var(--ink);
-      font-size: 1rem; line-height: 1;
+    /* ---------- floating glass nav ---------- */
+    .nav {
+      position: fixed; z-index: 90; top: 14px; left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 7px 7px 18px; border-radius: 980px;
+      max-width: calc(100vw - 24px);
+      background: linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.06) 45%, rgba(255,255,255,0.11));
+      border: 1px solid var(--g-rim);
+      -webkit-backdrop-filter: blur(24px) saturate(190%);
+      backdrop-filter: blur(24px) saturate(190%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.40), 0 12px 36px rgba(0,0,0,0.50);
+      transition: box-shadow 0.35s ease;
     }
-    @media (max-width: 860px) {
-      .nav-toggle { display: inline-flex; }
-      .nav-links {
-        position: absolute; top: 100%; left: 0; right: 0;
-        flex-direction: column; gap: 0; display: none;
-        background: var(--paper-raise); border-bottom: 1px solid var(--line);
-        padding: 6px var(--gutter) 12px; box-shadow: var(--shadow);
-      }
-      .nav-links.open { display: flex; }
-      .nav-links a { padding: 12px 0; font-size: 0.97rem; border-radius: 0; }
+    .nav.scrolled { box-shadow: inset 0 1px 0 rgba(255,255,255,0.40), 0 16px 44px rgba(0,0,0,0.62); }
+    .nav .mark { font-weight: 600; font-size: 0.95rem; letter-spacing: -0.02em; white-space: nowrap; color: #fff; }
+    .nav ul { display: flex; gap: 3px; list-style: none; }
+    .nav ul a {
+      display: block; padding: 8px 15px; border-radius: 980px;
+      font-size: 0.88rem; color: rgba(255,255,255,0.74); white-space: nowrap;
+      transition: background 0.24s ease, color 0.24s ease, box-shadow 0.24s ease;
+    }
+    .nav ul a:hover { color: #fff; background: rgba(255,255,255,0.12); }
+    .nav ul a.active {
+      color: #fff; background: rgba(255,255,255,0.20);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.45);
+    }
+    .nav .cta {
+      padding: 8px 17px; border-radius: 980px; font-size: 0.88rem; font-weight: 500;
+      background: var(--fill); color: #fff; white-space: nowrap;
+      box-shadow: 0 2px 12px rgba(0,113,227,0.55);
+      transition: filter 0.2s ease;
+    }
+    .nav .cta:hover { filter: brightness(1.12); }
+    .nav-burger {
+      display: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer;
+      background: rgba(255,255,255,0.14); border: 1px solid var(--g-rim); color: #fff;
+      font-size: 0.95rem; line-height: 1; align-items: center; justify-content: center;
+    }
+    .nav-panel {
+      position: fixed; z-index: 89; top: 74px; left: 50%; transform: translateX(-50%);
+      width: min(360px, calc(100vw - 24px)); border-radius: 24px; padding: 10px;
+      display: none;
+    }
+    .nav-panel.open { display: block; }
+    .nav-panel a { display: block; padding: 12px 16px; border-radius: 16px; color: rgba(255,255,255,0.88); font-size: 1rem; }
+    .nav-panel a:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    @media (max-width: 900px) {
+      .nav ul { display: none; }
+      .nav-burger { display: inline-flex; }
     }
 
-    /* ---------- buttons ---------- */
+    /* ---------- capsule controls ---------- */
     .btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 11px 22px; border-radius: 7px;
-      font-size: 0.92rem; font-weight: 500; white-space: nowrap;
-      border: 1px solid var(--line-strong); color: var(--ink);
-      background: var(--paper-raise);
-      transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 12px 24px; border-radius: 980px;
+      font-size: 1rem; font-weight: 400; letter-spacing: -0.022em;
+      background: var(--fill); color: #fff; border: 1px solid transparent;
+      box-shadow: 0 4px 18px rgba(0,113,227,0.45);
+      transition: filter 0.2s ease, transform 0.2s ease;
     }
-    .btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
-    .btn.primary {
-      background: var(--accent); border-color: var(--accent); color: var(--paper);
+    .btn:hover { filter: brightness(1.12); }
+    .btn:active { transform: scale(0.98); }
+    .btn.glassy {
+      background: rgba(255,255,255,0.12); color: #fff; border-color: var(--g-rim);
+      -webkit-backdrop-filter: blur(18px) saturate(180%); backdrop-filter: blur(18px) saturate(180%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.34), 0 8px 24px rgba(0,0,0,0.38);
     }
-    .btn.primary:hover { color: var(--paper); filter: brightness(1.12); }
-    .btn.sm { padding: 8px 15px; font-size: 0.84rem; }
-
-    /* ---------- sections ---------- */
-    section { padding: 104px 0; }
-    .sec-head { margin-bottom: 52px; max-width: 64ch; }
-    .sec-head h2 {
-      font-family: var(--serif); font-weight: 400; font-size: clamp(1.75rem, 3.4vw, 2.35rem);
-      letter-spacing: -0.015em; margin-top: 12px; line-height: 1.2;
-    }
-    .sec-head .sec-sub { color: var(--muted); margin-top: 14px; font-size: 1rem; }
-    .rule { height: 1px; background: var(--line); border: 0; }
-
-    .reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.6s ease, transform 0.6s ease; }
-    .reveal.in { opacity: 1; transform: none; }
+    .btn.glassy:hover { background: rgba(255,255,255,0.20); filter: none; }
 
     /* ---------- hero ---------- */
-    .hero { padding-top: 168px; padding-bottom: 96px; }
-    .hero h1 { font-size: clamp(2.35rem, 5.6vw, 3.85rem); margin-top: 20px; max-width: 19ch; }
-    .hero .lede { margin-top: 26px; }
-    .hero .actions { margin-top: 38px; display: flex; gap: 12px; flex-wrap: wrap; }
-
-    .cred {
-      margin-top: 72px; border-top: 1px solid var(--line);
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
-    }
-    .cred > div { padding: 26px 30px 0 0; }
-    .cred dt {
-      font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em;
-      text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
-    }
-    .cred dd { font-size: 0.97rem; color: var(--ink); line-height: 1.5; }
-    @media (max-width: 760px) {
-      .hero { padding-top: 128px; }
-      .cred { grid-template-columns: 1fr; }
-      .cred > div { padding: 22px 0; border-bottom: 1px solid var(--line); }
-      .cred > div:last-child { border-bottom: 0; }
-    }
+    .hero { padding: 172px 0 96px; text-align: center; position: relative; }
+    .hero h1 { margin-top: 14px; color: #fff; }
+    .hero .lede { margin: 22px auto 0; max-width: 46ch; }
+    .hero .actions { margin-top: 34px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .cred { margin-top: 74px; display: grid; gap: 14px; grid-template-columns: repeat(3, 1fr); text-align: left; }
+    .cred > div { padding: 24px 26px; }
+    .cred dt { font-size: 0.8rem; color: var(--on-2); margin-bottom: 8px; }
+    .cred dd { font-size: 1.02rem; color: #fff; font-weight: 500; line-height: 1.34; }
+    @media (max-width: 780px) { .cred { grid-template-columns: 1fr; } }
 
     /* ---------- about ---------- */
-    .about-grid { display: grid; grid-template-columns: 1.45fr 1fr; gap: 64px; align-items: start; }
-    @media (max-width: 880px) { .about-grid { grid-template-columns: 1fr; gap: 44px; } }
-    .about-text { color: var(--ink-soft); font-size: 1.04rem; }
+    .about-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; align-items: start; }
+    @media (max-width: 900px) { .about-grid { grid-template-columns: 1fr; } }
+    .about-text { padding: 38px 36px; font-size: 1.1rem; line-height: 1.52; color: rgba(245,245,247,0.86); }
     .about-text p + p { margin-top: 18px; }
-    .about-text strong { color: var(--ink); font-weight: 600; }
+    .about-text strong { color: #fff; font-weight: 600; }
+    .profile-tile { padding: 10px 26px; }
+    .profile-tile div { display: flex; justify-content: space-between; gap: 16px; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.10); }
+    .profile-tile div:last-child { border-bottom: 0; }
+    .profile-tile dt { color: var(--on-2); font-size: 0.92rem; white-space: nowrap; }
+    .profile-tile dd { font-size: 0.95rem; font-weight: 500; text-align: right; color: #fff; }
 
-    .profile {
-      background: var(--paper-raise); border: 1px solid var(--line);
-      border-radius: 10px; padding: 8px 24px; box-shadow: var(--shadow);
+    /* ---------- work tiles ---------- */
+    .tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+    .tiles .tile:first-child { grid-column: 1 / -1; }
+    @media (max-width: 860px) { .tiles { grid-template-columns: 1fr; } }
+    .tile {
+      padding: 36px 34px; display: flex; flex-direction: column; color: var(--on);
+      transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s ease;
     }
-    .profile div {
-      display: flex; justify-content: space-between; gap: 18px;
-      padding: 14px 0; border-bottom: 1px solid var(--line);
+    .tile:hover {
+      transform: translateY(-5px);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), inset 0 -1px 0 rgba(255,255,255,0.08), 0 30px 60px -22px rgba(0,0,0,0.80);
     }
-    .profile div:last-child { border-bottom: 0; }
-    .profile dt {
-      font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em;
-      text-transform: uppercase; color: var(--muted); padding-top: 3px; white-space: nowrap;
-    }
-    .profile dd { font-size: 0.93rem; text-align: right; font-weight: 500; }
-
-    /* ---------- selected work ---------- */
-    .work-list { border-top: 1px solid var(--line); }
-    .work-row {
-      display: grid; grid-template-columns: 124px 1fr; gap: 36px;
-      padding: 38px 0; border-bottom: 1px solid var(--line);
-    }
-    .work-meta { padding-top: 4px; }
-    .work-index {
-      font-family: var(--mono); font-size: 0.78rem; color: var(--accent); letter-spacing: 0.08em;
-    }
-    .work-period { font-family: var(--mono); font-size: 0.74rem; color: var(--muted); margin-top: 6px; }
-    .work-title {
-      font-family: var(--serif); font-weight: 400; font-size: 1.5rem;
-      letter-spacing: -0.01em; line-height: 1.25;
-    }
-    .work-title a { display: inline-flex; align-items: baseline; gap: 9px; transition: color 0.18s ease; }
-    .work-title a:hover { color: var(--accent); }
-    .work-title .arrow { font-size: 0.8em; color: var(--muted); transition: transform 0.18s ease, color 0.18s ease; }
-    .work-title a:hover .arrow { color: var(--accent); transform: translate(2px, -2px); }
-    .work-row p.desc { color: var(--ink-soft); margin-top: 12px; max-width: 66ch; }
-    .stack { list-style: none; display: flex; flex-wrap: wrap; gap: 7px; margin-top: 18px; }
-    .stack li {
-      font-family: var(--mono); font-size: 0.73rem; color: var(--muted);
-      border: 1px solid var(--line); border-radius: 4px; padding: 3px 9px;
-      background: var(--paper-raise);
-    }
-    @media (max-width: 760px) {
-      .work-row { grid-template-columns: 1fr; gap: 14px; padding: 30px 0; }
-      .work-meta { display: flex; gap: 14px; align-items: baseline; padding-top: 0; }
-      .work-period { margin-top: 0; }
+    .tile .idx { font-family: var(--mono); font-size: 0.78rem; color: var(--on-2); }
+    .tile h3 { margin-top: 12px; color: #fff; }
+    .tile h3 .arrow { color: var(--on-2); font-weight: 400; display: inline-block; transition: transform 0.28s ease, color 0.28s ease; }
+    .tile:hover h3 .arrow { transform: translate(3px, -3px); color: var(--accent); }
+    .tile p.desc { color: rgba(245,245,247,0.76); margin-top: 14px; font-size: 1.01rem; line-height: 1.46; flex: 1; }
+    .tile .period { color: var(--on-2); font-size: 0.86rem; margin-top: 12px; }
+    .chips { list-style: none; display: flex; flex-wrap: wrap; gap: 7px; margin-top: 20px; }
+    .chips li {
+      font-size: 0.8rem; color: rgba(255,255,255,0.88); border-radius: 980px; padding: 5px 13px;
+      background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.14);
     }
 
     /* ---------- repo list ---------- */
-    .more-head {
-      display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
-      margin: 76px 0 8px;
-    }
-    .more-head h3 {
-      font-family: var(--serif); font-weight: 400; font-size: 1.3rem; letter-spacing: -0.01em;
-    }
-    .more-head .note { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
-    .repo-list { border-top: 1px solid var(--line); }
+    .more-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin: 72px 0 18px; }
+    .more-head h3 { font-size: 1.45rem; color: #fff; }
+    .more-head .note { font-size: 0.88rem; color: var(--on-2); }
+    .repo-list { overflow: hidden; }
     .repo-row {
-      display: grid; grid-template-columns: minmax(170px, 230px) 1fr auto; gap: 24px;
-      align-items: baseline; padding: 15px 8px 15px 0; border-bottom: 1px solid var(--line);
-      transition: background 0.18s ease, padding-left 0.18s ease;
+      display: grid; grid-template-columns: minmax(150px, 210px) 1fr auto; gap: 20px;
+      align-items: baseline; padding: 17px 26px; border-bottom: 1px solid rgba(255,255,255,0.09);
+      transition: background 0.22s ease; position: relative; z-index: 1;
     }
-    .repo-row:hover { background: var(--accent-soft); padding-left: 10px; }
-    .repo-name { font-weight: 500; font-size: 0.95rem; }
+    .repo-row:last-child { border-bottom: 0; }
+    .repo-row:hover { background: rgba(255,255,255,0.08); }
+    .repo-name { font-weight: 500; font-size: 0.99rem; color: #fff; }
     .repo-row:hover .repo-name { color: var(--accent); }
-    .repo-desc { color: var(--muted); font-size: 0.9rem; }
-    .repo-lang { font-family: var(--mono); font-size: 0.74rem; color: var(--muted); white-space: nowrap; }
-    .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
-    @media (max-width: 760px) {
-      /* a 1fr + auto grid squeezes the language track to zero here, so switch
-         to flex: name and language share a line, description wraps below */
-      .repo-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
+    .repo-desc { color: var(--on-2); font-size: 0.93rem; }
+    .repo-lang { font-size: 0.82rem; color: var(--on-2); white-space: nowrap; }
+    .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+    @media (max-width: 780px) {
+      .repo-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; padding: 15px 20px; }
       .repo-name { flex: 1 1 auto; order: 0; }
-      .repo-lang { flex: 0 0 auto; order: 1; }   /* reorder: markup puts desc before lang */
+      .repo-lang { flex: 0 0 auto; order: 1; }   /* markup puts desc before lang */
       .repo-desc { flex: 1 1 100%; order: 2; }
     }
-    .status { color: var(--muted); font-family: var(--mono); font-size: 0.85rem; padding: 22px 0; }
+    .status { color: var(--on-2); font-size: 0.92rem; padding: 20px 4px; }
 
     /* ---------- expertise ---------- */
-    .skill-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
-    .skill-group { background: var(--paper); padding: 26px 24px; }
-    .skill-group h3 {
-      font-family: var(--mono); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.14em;
-      text-transform: uppercase; color: var(--accent); margin-bottom: 16px;
+    .skill-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+    .skill-card { padding: 26px 24px; }
+    .skill-card h3 { font-size: 0.96rem; font-weight: 600; color: #fff; margin-bottom: 14px; }
+    .skill-card ul { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+    .skill-card li {
+      font-size: 0.83rem; color: rgba(255,255,255,0.86); border-radius: 980px; padding: 4px 11px;
+      background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.12);
     }
-    .skill-group ul { list-style: none; display: flex; flex-wrap: wrap; gap: 7px; }
-    .skill-group li { font-size: 0.87rem; color: var(--ink-soft); }
-    .skill-group li::after { content: "·"; color: var(--line-strong); margin-left: 7px; }
-    .skill-group li:last-child::after { content: ""; }
-    .detected-note { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); margin-top: 18px; }
+    .detected-note { color: var(--on-2); font-size: 0.9rem; margin-top: 22px; max-width: 62ch; }
 
     /* ---------- experience ---------- */
-    .xp-list { border-top: 1px solid var(--line); }
-    .xp-row {
-      display: grid; grid-template-columns: 200px 1fr; gap: 36px;
-      padding: 34px 0; border-bottom: 1px solid var(--line);
-    }
-    .xp-date { font-family: var(--mono); font-size: 0.76rem; color: var(--muted); padding-top: 6px; letter-spacing: 0.02em; }
-    .xp-role { font-size: 1.1rem; font-weight: 600; letter-spacing: -0.01em; }
-    .xp-org { color: var(--accent); font-size: 0.95rem; margin-top: 2px; }
-    .xp-row p.desc { color: var(--ink-soft); margin-top: 11px; max-width: 64ch; font-size: 0.97rem; }
-    @media (max-width: 760px) { .xp-row { grid-template-columns: 1fr; gap: 10px; padding: 26px 0; } .xp-date { padding-top: 0; } }
+    .xp-list { overflow: hidden; }
+    .xp-row { display: grid; grid-template-columns: 190px 1fr; gap: 30px; padding: 30px; border-bottom: 1px solid rgba(255,255,255,0.09); position: relative; z-index: 1; }
+    .xp-row:last-child { border-bottom: 0; }
+    .xp-date { color: var(--on-2); font-size: 0.9rem; padding-top: 4px; }
+    .xp-role { font-size: 1.14rem; font-weight: 600; letter-spacing: -0.026em; color: #fff; }
+    .xp-org { color: var(--accent); font-size: 0.98rem; margin-top: 2px; }
+    .xp-row p.desc { color: rgba(245,245,247,0.74); margin-top: 10px; font-size: 1rem; line-height: 1.46; max-width: 62ch; }
+    @media (max-width: 780px) { .xp-row { grid-template-columns: 1fr; gap: 8px; padding: 24px 20px; } .xp-date { padding-top: 0; } }
 
-    /* ---------- credentials ---------- */
-    .cert-list { border-top: 1px solid var(--line); }
+    .cert-list { overflow: hidden; margin-top: 18px; }
     .cert-row {
-      display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: baseline;
-      padding: 18px 8px 18px 0; border-bottom: 1px solid var(--line);
-      transition: background 0.18s ease, padding-left 0.18s ease;
+      display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: baseline;
+      padding: 19px 26px; border-bottom: 1px solid rgba(255,255,255,0.09);
+      transition: background 0.22s ease; position: relative; z-index: 1;
     }
-    .cert-row:hover { background: var(--accent-soft); padding-left: 10px; }
-    .cert-name { font-weight: 500; font-size: 0.97rem; }
+    .cert-row:last-child { border-bottom: 0; }
+    .cert-row:hover { background: rgba(255,255,255,0.08); }
+    .cert-name { font-weight: 500; font-size: 1rem; color: #fff; }
     .cert-row:hover .cert-name { color: var(--accent); }
-    .cert-issuer { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); white-space: nowrap; }
+    .cert-issuer { color: var(--on-2); font-size: 0.88rem; white-space: nowrap; }
     @media (max-width: 620px) { .cert-row { grid-template-columns: 1fr; gap: 4px; } }
 
     /* ---------- contact ---------- */
-    #contact .wrap { max-width: 760px; }
-    #contact h2 { max-width: 16ch; }
-    .contact-links { margin-top: 34px; display: flex; gap: 12px; flex-wrap: wrap; }
+    #contact { text-align: center; }
+    .contact-panel { padding: 58px 40px; }
+    #contact .t-section { color: #fff; }
+    #contact .sub { margin-left: auto; margin-right: auto; }
+    .contact-actions { margin-top: 32px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
-    footer {
-      border-top: 1px solid var(--line); padding: 32px 0;
-      color: var(--muted); font-size: 0.83rem;
-    }
-    .foot-inner { display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
-    footer a { color: var(--muted); border-bottom: 1px solid var(--line-strong); }
-    footer a:hover { color: var(--accent); border-color: var(--accent); }
+    footer { padding: 34px 0 40px; color: var(--on-2); font-size: 0.82rem; }
+    .foot-inner { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    footer a { color: var(--on-2); text-decoration: underline; text-underline-offset: 3px; }
+    footer a:hover { color: var(--accent); }
+
+    /* ---------- motion ---------- */
+    .reveal { opacity: 0; transform: translateY(20px) scale(0.995); transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1), transform 0.75s cubic-bezier(0.22,1,0.36,1); }
+    .reveal.in { opacity: 1; transform: none; }
 
     #to-top {
-      position: fixed; right: 22px; bottom: 22px; z-index: 40;
-      width: 42px; height: 42px; border-radius: 8px; cursor: pointer;
-      border: 1px solid var(--line-strong); background: var(--paper-raise); color: var(--ink);
-      box-shadow: var(--shadow);
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.25s ease, transform 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+      position: fixed; right: 20px; bottom: 20px; z-index: 80;
+      width: 46px; height: 46px; border-radius: 50%; cursor: pointer; color: #fff;
+      background: rgba(255,255,255,0.12); border: 1px solid var(--g-rim);
+      -webkit-backdrop-filter: blur(18px) saturate(180%); backdrop-filter: blur(18px) saturate(180%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.34), 0 10px 30px rgba(0,0,0,0.5);
+      opacity: 0; pointer-events: none; transition: opacity 0.3s ease, transform 0.2s ease;
     }
     #to-top.show { opacity: 1; pointer-events: auto; }
-    #to-top:hover { transform: translateY(-2px); color: var(--accent); border-color: var(--accent); }
+    #to-top:hover { transform: translateY(-2px); background: rgba(255,255,255,0.2); }
 
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -340,104 +387,109 @@
 <body>
   <a class="skip" href="#main">Skip to content</a>
 
-  <header class="site-nav" id="nav">
-    <div class="wrap nav-inner">
-      <a class="wordmark" href="#top">Favour Tumba</a>
-      <nav aria-label="Sections">
-        <ul class="nav-links" id="nav-links">
-          <li><a href="#about">About</a></li>
-          <li><a href="#work">Work</a></li>
-          <li><a href="#expertise">Expertise</a></li>
-          <li><a href="#experience">Experience</a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-      </nav>
-      <a class="btn sm" id="nav-resume" href="#" target="_blank" rel="noopener">Résumé</a>
-      <button class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">☰</button>
-    </div>
-  </header>
+  <div class="field" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="scrim" aria-hidden="true"></div>
+
+  <nav class="nav" id="nav" aria-label="Primary">
+    <a class="mark" href="#top">Favour Tumba</a>
+    <ul id="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#expertise">Expertise</a></li>
+      <li><a href="#experience">Experience</a></li>
+    </ul>
+    <a class="cta" id="nav-resume" href="#" target="_blank" rel="noopener">Résumé</a>
+    <button class="nav-burger" id="nav-burger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-panel">☰</button>
+  </nav>
+  <div class="nav-panel glass glass-panel" id="nav-panel">
+    <a href="#about">About</a>
+    <a href="#work">Work</a>
+    <a href="#expertise">Expertise</a>
+    <a href="#experience">Experience</a>
+    <a href="#contact">Contact</a>
+  </div>
 
   <main id="main">
-    <section class="hero" id="top">
+    <header class="hero" id="top">
       <div class="wrap">
         <p class="eyebrow" id="hero-eyebrow"></p>
-        <h1 class="display" id="hero-headline"></h1>
+        <h1 class="t-hero" id="hero-headline"></h1>
         <p class="lede" id="hero-lede"></p>
         <div class="actions">
-          <a class="btn primary" href="#work">Selected work</a>
-          <a class="btn" id="hero-resume" href="#" target="_blank" rel="noopener">Résumé</a>
-          <a class="btn" href="#contact">Get in touch</a>
+          <a class="btn" href="#work">Selected work</a>
+          <a class="btn glassy" id="hero-resume" href="#" target="_blank" rel="noopener">Résumé</a>
         </div>
         <dl class="cred" id="cred"></dl>
       </div>
-    </section>
+    </header>
 
-    <section id="about">
+    <section class="band" id="about">
       <div class="wrap">
         <div class="sec-head reveal">
           <p class="eyebrow">About</p>
-          <h2>Engineering across AI, backend and the full stack.</h2>
+          <h2 class="t-section">Engineering across AI, backend<br>and the full stack.</h2>
         </div>
         <div class="about-grid">
-          <div class="about-text reveal" id="about-text"></div>
-          <dl class="profile reveal" id="profile"></dl>
+          <div class="about-text glass glass-panel reveal" id="about-text"></div>
+          <dl class="profile-tile glass glass-panel reveal" id="profile"></dl>
         </div>
       </div>
     </section>
 
-    <section id="work">
+    <section class="band" id="work">
       <div class="wrap">
         <div class="sec-head reveal">
           <p class="eyebrow">Selected work</p>
-          <h2>Systems I designed, built and shipped.</h2>
-          <p class="sec-sub">Each one was built end to end — data model, API, retrieval or training loop, and the interface on top.</p>
+          <h2 class="t-section">Systems I designed, built and shipped.</h2>
+          <p class="sub">Each one built end to end — data model, API, retrieval or training loop, and the interface on top.</p>
         </div>
 
-        <div class="work-list" id="work-list"></div>
+        <div class="tiles" id="tiles"></div>
 
         <div class="more-head reveal">
           <h3>More from GitHub</h3>
           <span class="note" id="repo-note"></span>
         </div>
         <div class="status" id="status">Loading repositories…</div>
-        <div class="repo-list" id="repo-list"></div>
+        <div class="repo-list glass glass-panel reveal" id="repo-list"></div>
       </div>
     </section>
 
-    <section id="expertise">
+    <section class="band" id="expertise">
       <div class="wrap">
         <div class="sec-head reveal">
           <p class="eyebrow">Expertise</p>
-          <h2>Tools I reach for.</h2>
+          <h2 class="t-section">Tools I reach for.</h2>
         </div>
-        <div class="skill-groups reveal" id="skill-groups"></div>
+        <div class="skill-grid" id="skill-grid"></div>
         <p class="detected-note reveal" id="detected-note" hidden></p>
       </div>
     </section>
 
-    <section id="experience">
+    <section class="band" id="experience">
       <div class="wrap">
         <div class="sec-head reveal">
           <p class="eyebrow">Experience</p>
-          <h2>Where I've worked.</h2>
+          <h2 class="t-section">Where I've worked.</h2>
         </div>
-        <div class="xp-list" id="xp-list"></div>
+        <div class="xp-list glass glass-panel reveal" id="xp-list"></div>
 
         <div class="more-head reveal">
           <h3>Credentials</h3>
         </div>
-        <div class="cert-list" id="cert-list"></div>
+        <div class="cert-list glass glass-panel reveal" id="cert-list"></div>
       </div>
     </section>
 
-    <section id="contact">
+    <section class="band" id="contact">
       <div class="wrap">
-        <div class="sec-head reveal">
+        <div class="contact-panel glass glass-panel lens reveal">
+          <span class="lens-rim" aria-hidden="true"></span>
           <p class="eyebrow">Contact</p>
-          <h2>Let's talk.</h2>
-          <p class="sec-sub" id="contact-sub"></p>
+          <h2 class="t-section">Let's talk.</h2>
+          <p class="sub" id="contact-sub"></p>
+          <div class="contact-actions" id="contact-actions"></div>
         </div>
-        <div class="contact-links reveal" id="contact-links"></div>
       </div>
     </section>
   </main>
@@ -445,7 +497,7 @@
   <footer>
     <div class="wrap foot-inner">
       <span>© <span id="year"></span> Favour Tumba</span>
-      <span>Built by me · project list synced with <a href="https://github.com/tumbafavour" target="_blank" rel="noopener">GitHub</a></span>
+      <span>Project list synced with <a href="https://github.com/tumbafavour" target="_blank" rel="noopener">GitHub</a></span>
     </div>
   </footer>
 
@@ -454,19 +506,17 @@
   <script>
     /* ================================================================
        EDIT ME — everything personal lives in this one object.
-       The page renders itself from it.
        ================================================================ */
     const PROFILE = {
       username: "tumbafavour",
-      showcaseTopic: "portfolio",   // tag repos with this topic to narrow the GitHub list
+      showcaseTopic: "portfolio",
       email: "tumbafavour1@gmail.com",
       resume: "Favour_Tumba_Resume.pdf",
 
       eyebrow: "Software Engineer · AfterQuery",
       headline: "Building AI, backend and full-stack systems that run in production.",
-      lede: "I work across React and TypeScript interfaces and Python backend services — from API design through to deployment. Outside of work I build systems from first principles: LLM observability, retrieval-augmented APIs, a GPT in pure PyTorch, and a distributed task queue on Redis.",
+      lede: "From API design through to deployment — LLM observability, retrieval-augmented services, and the interfaces on top.",
 
-      /* Three credibility lines under the hero. Keep it to three. */
       credentials: [
         { k: "Currently", v: "Software Engineer at AfterQuery" },
         { k: "Focus", v: "AI systems · Backend · Full-stack" },
@@ -495,8 +545,7 @@
         { group: "Platform", items: ["Docker", "GitHub Actions", "CI/CD", "Git", "Linux", "pytest", "Streamlit"] }
       ],
 
-      /* Curated highlights, shown above the auto-synced GitHub list.
-         `repo` must match the GitHub repo name so it isn't listed twice. */
+      /* Curated highlights. `repo` must match the GitHub repo name so it isn't listed twice. */
       featured: [
         {
           repo: "LLM-Evaluation-Observability-Platform",
@@ -509,7 +558,7 @@
           repo: "Doc-Intelligence",
           name: "Document Intelligence API",
           period: "2026 — present",
-          blurb: "A document question-answering REST API that ingests PDFs, chunks and embeds them, and answers in plain language with structured citations. Hybrid retrieval fuses PostgreSQL full-text search with pgvector embeddings via Reciprocal Rank Fusion, with cost and latency telemetry on every query.",
+          blurb: "Ingests PDFs, chunks and embeds them, and answers questions in plain language with structured citations. Hybrid retrieval fuses PostgreSQL full-text search with pgvector embeddings via Reciprocal Rank Fusion, with cost and latency telemetry on every query.",
           stack: ["Python", "FastAPI", "pgvector", "Claude API", "Docker"]
         },
         {
@@ -535,7 +584,6 @@
         }
       ],
 
-      /* Newest first. */
       experience: [
         {
           date: "Aug 2026 — present",
@@ -597,7 +645,7 @@
 
     const $ = (id) => document.getElementById(id);
     const esc = (s) => { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; };
-    const repoUrl = (name) => `https://github.com/${PROFILE.username}/${name}`;
+    const repoUrl = (n) => `https://github.com/${PROFILE.username}/${n}`;
 
     /* ---------- static render ---------- */
     $("year").textContent = new Date().getFullYear();
@@ -609,31 +657,29 @@
     $("nav-resume").href = PROFILE.resume;
 
     $("cred").innerHTML = PROFILE.credentials
-      .map(c => `<div><dt>${esc(c.k)}</dt><dd>${esc(c.v)}</dd></div>`).join("");
+      .map(c => `<div class="glass glass-card lens reveal"><span class="lens-rim" aria-hidden="true"></span><dt>${esc(c.k)}</dt><dd>${esc(c.v)}</dd></div>`).join("");
 
     $("about-text").innerHTML = PROFILE.about.map(p => `<p>${p}</p>`).join("");
-
     $("profile").innerHTML = PROFILE.profile
-      .map(p => `<div><dt>${esc(p.k)}</dt><dd data-k="${esc(p.k)}">${esc(p.v)}</dd></div>`).join("");
+      .map(p => `<div><dt>${esc(p.k)}</dt><dd>${esc(p.v)}</dd></div>`).join("");
 
-    $("work-list").innerHTML = PROFILE.featured.map((f, i) => `
-      <article class="work-row reveal">
-        <div class="work-meta">
-          <div class="work-index">${String(i + 1).padStart(2, "0")}</div>
-          <div class="work-period">${esc(f.period)}</div>
-        </div>
-        <div>
-          <h3 class="work-title"><a href="${repoUrl(f.repo)}" target="_blank" rel="noopener">${esc(f.name)}<span class="arrow" aria-hidden="true">↗</span></a></h3>
-          <p class="desc">${esc(f.blurb)}</p>
-          <ul class="stack">${f.stack.map(s => `<li>${esc(s)}</li>`).join("")}</ul>
-        </div>
-      </article>`).join("");
+    $("tiles").innerHTML = PROFILE.featured.map((f, i) => `
+      <a class="tile glass glass-panel reveal" href="${repoUrl(f.repo)}" target="_blank" rel="noopener">
+        <span class="idx">${String(i + 1).padStart(2, "0")}</span>
+        <h3 class="t-tile">${esc(f.name)} <span class="arrow" aria-hidden="true">↗</span></h3>
+        <p class="desc">${esc(f.blurb)}</p>
+        <span class="period">${esc(f.period)}</span>
+        <ul class="chips">${f.stack.map(s => `<li>${esc(s)}</li>`).join("")}</ul>
+      </a>`).join("");
 
-    $("skill-groups").innerHTML = PROFILE.skills
-      .map(g => `<div class="skill-group"><h3>${esc(g.group)}</h3><ul>${g.items.map(i => `<li>${esc(i)}</li>`).join("")}</ul></div>`).join("");
+    $("skill-grid").innerHTML = PROFILE.skills.map(g => `
+      <div class="skill-card glass glass-card reveal">
+        <h3>${esc(g.group)}</h3>
+        <ul>${g.items.map(i => `<li>${esc(i)}</li>`).join("")}</ul>
+      </div>`).join("");
 
     $("xp-list").innerHTML = PROFILE.experience.map(x => `
-      <div class="xp-row reveal">
+      <div class="xp-row">
         <div class="xp-date">${esc(x.date)}</div>
         <div>
           <div class="xp-role">${esc(x.role)}</div>
@@ -645,47 +691,56 @@
     $("cert-list").innerHTML = PROFILE.certifications.map(c => {
       const inner = `<span class="cert-name">${esc(c.name)}</span><span class="cert-issuer">${esc(c.issuer)}</span>`;
       return c.url
-        ? `<a class="cert-row reveal" href="${c.url}" target="_blank" rel="noopener">${inner}</a>`
-        : `<div class="cert-row reveal">${inner}</div>`;
+        ? `<a class="cert-row" href="${c.url}" target="_blank" rel="noopener">${inner}</a>`
+        : `<div class="cert-row">${inner}</div>`;
     }).join("");
 
-    $("contact-links").innerHTML = PROFILE.socials.map(s => {
-      const newTab = !s.url.startsWith("mailto:");   // PDFs and profiles open alongside the site
-      return `<a class="btn${s.primary ? " primary" : ""}" href="${s.url}" ${newTab ? 'target="_blank" rel="noopener"' : ""}>${esc(s.label)}</a>`;
+    $("contact-actions").innerHTML = PROFILE.socials.map(s => {
+      const newTab = !s.url.startsWith("mailto:");
+      const cls = s.primary ? "btn" : "btn glassy";
+      return `<a class="${cls}" href="${s.url}" ${newTab ? 'target="_blank" rel="noopener"' : ""}>${esc(s.label)}</a>`;
     }).join("");
+
+    /* ---------- liquid glass: specular highlight tracks the pointer ---------- */
+    document.addEventListener("pointermove", e => {
+      const g = e.target.closest(".glass");
+      if (!g) return;
+      const r = g.getBoundingClientRect();
+      g.style.setProperty("--mx", `${e.clientX - r.left}px`);
+      g.style.setProperty("--my", `${e.clientY - r.top}px`);
+    }, { passive: true });
 
     /* ---------- nav state, scroll-spy, back to top ---------- */
-    const sections = [...document.querySelectorAll("section[id]")];
-    const navAnchors = [...document.querySelectorAll(".nav-links a")];
+    const bands = [...document.querySelectorAll("section[id], header[id]")];
+    const navAnchors = [...document.querySelectorAll("#nav-links a")];
     addEventListener("scroll", () => {
       $("nav").classList.toggle("scrolled", scrollY > 20);
-      $("to-top").classList.toggle("show", scrollY > 640);
-      const pos = scrollY + 140;
+      $("to-top").classList.toggle("show", scrollY > 700);
+      const pos = scrollY + 160;
       let current = "";
-      for (const s of sections) if (s.offsetTop <= pos) current = s.id;
+      for (const s of bands) if (s.offsetTop <= pos) current = s.id;
       navAnchors.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + current));
     }, { passive: true });
     $("to-top").addEventListener("click", () => scrollTo({ top: 0, behavior: "smooth" }));
 
     /* ---------- mobile menu ---------- */
     (function menu() {
-      const toggle = $("nav-toggle"), links = $("nav-links");
-      const close = () => { links.classList.remove("open"); toggle.setAttribute("aria-expanded", "false"); };
-      toggle.addEventListener("click", () => {
-        const open = links.classList.toggle("open");
-        toggle.setAttribute("aria-expanded", String(open));
+      const burger = $("nav-burger"), panel = $("nav-panel");
+      const close = () => { panel.classList.remove("open"); burger.setAttribute("aria-expanded", "false"); };
+      burger.addEventListener("click", e => {
+        e.stopPropagation();
+        const open = panel.classList.toggle("open");
+        burger.setAttribute("aria-expanded", String(open));
       });
-      links.addEventListener("click", e => { if (e.target.closest("a")) close(); });
+      panel.addEventListener("click", e => { if (e.target.closest("a")) close(); });
       addEventListener("keydown", e => { if (e.key === "Escape") close(); });
-      document.addEventListener("click", e => {
-        if (!e.target.closest(".site-nav")) close();
-      });
+      document.addEventListener("click", e => { if (!e.target.closest("#nav-panel, #nav")) close(); });
     })();
 
     /* ---------- reveal on scroll ---------- */
     const io = new IntersectionObserver(entries => {
       for (const e of entries) if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
-    }, { threshold: 0.08, rootMargin: "0px 0px -40px 0px" });
+    }, { threshold: 0.06, rootMargin: "0px 0px -40px 0px" });
     function observeReveals() { document.querySelectorAll(".reveal:not(.in)").forEach(el => io.observe(el)); }
     observeReveals();
 
@@ -700,7 +755,6 @@
         repos = repos.filter(r => !r.fork && r.name.toLowerCase() !== `${PROFILE.username}.github.io`);
 
         const tagged = repos.filter(r => (r.topics || []).includes(PROFILE.showcaseTopic));
-        // anything already written up in PROFILE.featured shouldn't be listed twice
         const curated = new Set(PROFILE.featured.map(f => f.repo.toLowerCase()));
         const showing = (tagged.length > 0 ? tagged : repos).filter(r => !curated.has(r.name.toLowerCase()));
 
@@ -711,15 +765,13 @@
           const lang = repo.language
             ? `<span class="repo-lang"><i class="dot" style="background:${LANG_COLORS[repo.language] || "#8b949e"}"></i>${esc(repo.language)}</span>`
             : `<span class="repo-lang"></span>`;
-          return `<a class="repo-row reveal" href="${repo.html_url}" target="_blank" rel="noopener">
+          return `<a class="repo-row" href="${repo.html_url}" target="_blank" rel="noopener">
             <span class="repo-name">${esc(repo.name)}</span>
             <span class="repo-desc">${repo.description ? esc(repo.description) : ""}</span>
             ${lang}
           </a>`;
         }).join("");
-        observeReveals();
 
-        // keep the profile card's "Domains" honest is manual; nothing auto here
         detectSkills(repos, tagged);
       } catch (err) {
         status.textContent = `Couldn't reach GitHub just now — the full list lives at github.com/${PROFILE.username}.`;
@@ -729,12 +781,10 @@
     loadGitHub();
 
     /* ---------- skills detected from repo languages + topics ----------
-       "Worth adding" rules:
        - a language must be >=2% of all code bytes OR appear in 2+ repos
        - a topic must appear on 2+ repos OR on any featured repo
-       - anything already listed manually in PROFILE.skills is skipped
-       Cached in the visitor's browser for 24h to stay well within
-       GitHub's unauthenticated rate limits. */
+       - anything already in PROFILE.skills is skipped
+       Cached for 24h to stay within GitHub's unauthenticated rate limits. */
     async function detectSkills(repos, tagged) {
       const CACHE_KEY = "gh-detected-skills-v2";
       try {
@@ -744,9 +794,8 @@
         }
       } catch { /* unreadable cache — just refetch */ }
 
-      const recent = repos.slice(0, 20);
       const results = await Promise.allSettled(
-        recent.map(r => fetch(r.languages_url).then(x => x.ok ? x.json() : {}))
+        repos.slice(0, 20).map(r => fetch(r.languages_url).then(x => x.ok ? x.json() : {}))
       );
       const bytes = {}, repoCount = {};
       for (const res of results) {
@@ -787,13 +836,13 @@
       ];
       if (items.length === 0) return;
 
-      const group = document.createElement("div");
-      group.className = "skill-group";
-      group.innerHTML = `<h3>Also in my repositories</h3><ul>${items.map(i => `<li>${esc(i)}</li>`).join("")}</ul>`;
-      $("skill-groups").appendChild(group);
+      const card = document.createElement("div");
+      card.className = "skill-card glass glass-card reveal";
+      card.innerHTML = `<h3>Also in my repositories</h3><ul>${items.map(i => `<li>${esc(i)}</li>`).join("")}</ul>`;
+      $("skill-grid").appendChild(card);
 
       const note = $("detected-note");
-      note.textContent = "This last group is read from the languages and topics of my public repositories, so it updates itself as I ship.";
+      note.textContent = "That last group is read from the languages and topics of my public repositories, so it updates itself as I ship.";
       note.hidden = false;
       observeReveals();
     }
