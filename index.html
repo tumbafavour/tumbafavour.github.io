@@ -94,21 +94,43 @@
       from { transform: translate3d(0, 0, 0) scale(1); }
       to   { transform: translate3d(4%, -3%, 0) scale(1.12); }
     }
-    /* scrim keeps text legible wherever the field is bright */
-    .scrim { position: absolute; inset: 0; z-index: -1; pointer-events: none; background: rgba(5, 6, 10, 0.58); }
+    /* Only a light scrim. A heavy one flattens the field into near-black and
+       then there is nothing for the glass to refract - it reads as a dark card.
+       Legibility is handled per-panel by .frost instead. */
+    .scrim { position: absolute; inset: 0; z-index: -1; pointer-events: none; background: rgba(5, 6, 10, 0.26); }
+    /* fine grain: high-frequency detail makes the refraction visible. Smooth
+       gradients alone distort invisibly - there is no edge to bend. */
+    .grain {
+      position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: 0.30;
+      background-image:
+        repeating-linear-gradient(115deg, rgba(255,255,255,0.055) 0 1px, transparent 1px 7px),
+        repeating-linear-gradient(25deg,  rgba(255,255,255,0.040) 0 1px, transparent 1px 9px);
+    }
 
     /* ---------- the glass material ---------- */
     .glass {
       position: relative; isolation: isolate;
-      background:
-        linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.04) 42%, rgba(255,255,255,0.09));
+      /* barely tinted: the point is to SEE THROUGH it */
+      background: linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02) 46%, rgba(255,255,255,0.06));
       border: 1px solid var(--g-rim);
-      -webkit-backdrop-filter: var(--g-blur);
-      backdrop-filter: var(--g-blur);
+      -webkit-backdrop-filter: blur(4px) saturate(200%) brightness(1.14);
+      backdrop-filter: blur(4px) saturate(200%) brightness(1.14);
+      /* bevel: a slab of glass has thickness, so the top inner edge catches
+         light and the bottom inner edge carries the shadow of that thickness */
       box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.38),      /* specular top edge */
-        inset 0 -1px 0 rgba(255,255,255,0.07),     /* bounce off the bottom */
-        0 18px 44px -18px rgba(0,0,0,0.70);
+        inset 0 1.5px 0 rgba(255,255,255,0.55),
+        inset 0 -1.5px 0 rgba(255,255,255,0.10),
+        inset 3px 0 12px -8px rgba(255,255,255,0.45),
+        inset -3px 0 12px -8px rgba(255,255,255,0.45),
+        inset 0 -22px 34px -30px rgba(0,0,0,0.85),
+        0 18px 44px -18px rgba(0,0,0,0.60);
+    }
+    /* frosted tier for long-form text: more blur and a tint, so body copy stays
+       readable over a bright field. Apple ships thicknesses for the same reason. */
+    .glass.frost {
+      background: linear-gradient(135deg, rgba(14,16,24,0.50), rgba(14,16,24,0.34) 46%, rgba(14,16,24,0.46));
+      -webkit-backdrop-filter: blur(26px) saturate(180%);
+      backdrop-filter: blur(26px) saturate(180%);
     }
     /* Prismatic rim. A real lens bends light hardest at its edge and splits it
        slightly, so the edge carries a cool-to-warm fringe. Drawn as a masked
@@ -129,19 +151,40 @@
               mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
               mask-composite: exclude;
     }
-    /* true edge refraction, reserved for focal surfaces */
-    .glass.lens { --lens-w: 14px; }
-    .glass.lens > .lens-rim {
+    /* REFRACTION. A real lens bends light hardest at its edge, so the rim gets
+       an SVG displacement map — the background behind it is genuinely warped,
+       not just blurred. Falls back to blur where backdrop-filter: url() is
+       unsupported (Firefox, older Safari). */
+    .glass > .lens-rim {
       position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 0;
-      padding: var(--lens-w);
-      -webkit-backdrop-filter: blur(5px) saturate(250%) brightness(1.16);
-      backdrop-filter: blur(5px) saturate(250%) brightness(1.16);
+      padding: 18px;
+      -webkit-backdrop-filter: blur(2px) saturate(240%) brightness(1.22);
+      backdrop-filter: blur(2px) saturate(240%) brightness(1.22);
       -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
       -webkit-mask-composite: xor;
               mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
               mask-composite: exclude;
     }
-    .glass.lens > *:not(.lens-rim) { position: relative; z-index: 1; }
+    @supports (backdrop-filter: url(#liquid-rim)) {
+      .glass > .lens-rim {
+        backdrop-filter: url(#liquid-rim) saturate(230%) brightness(1.20);
+      }
+      /* the body of the pane gets a gentler warp, so content behind it moves */
+      .glass:not(.frost) {
+        backdrop-filter: url(#liquid-body) saturate(200%) brightness(1.12);
+      }
+    }
+    .glass > *:not(.lens-rim) { position: relative; z-index: 1; }
+
+    /* Clear glass sits over a bright, refracting field, so secondary text needs
+       lifting — at --on-2 over a lit blob it falls to roughly 3:1. Frosted
+       panels carry their own tint and keep the quieter tone. */
+    .glass:not(.frost) { text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45); }
+    .glass:not(.frost) .idx,
+    .glass:not(.frost) .period,
+    .cred dt { color: rgba(255, 255, 255, 0.82); }
+    .glass:not(.frost) p.desc { color: rgba(255, 255, 255, 0.90); }
+    .glass:not(.frost) .skill-card li { color: #fff; }
     /* specular highlight that tracks the pointer — the "liquid" tell */
     .glass::after {
       content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
@@ -389,6 +432,22 @@
 
   <div class="field" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
   <div class="scrim" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- displacement maps: these are what actually bend the background -->
+  <svg class="filters" width="0" height="0" aria-hidden="true" focusable="false">
+    <filter id="liquid-rim" x="-35%" y="-35%" width="170%" height="170%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.006 0.010" numOctaves="2" seed="11" result="n"/>
+      <feGaussianBlur in="n" stdDeviation="7" result="sn"/>
+      <feDisplacementMap in="SourceGraphic" in2="sn" scale="58" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <filter id="liquid-body" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.004 0.007" numOctaves="2" seed="4" result="n"/>
+      <feGaussianBlur in="n" stdDeviation="9" result="sn"/>
+      <feDisplacementMap in="SourceGraphic" in2="sn" scale="22" xChannelSelector="R" yChannelSelector="G"/>
+      <feGaussianBlur stdDeviation="1.5"/>
+    </filter>
+  </svg>
 
   <nav class="nav" id="nav" aria-label="Primary">
     <a class="mark" href="#top">Favour Tumba</a>
@@ -401,7 +460,7 @@
     <a class="cta" id="nav-resume" href="#" target="_blank" rel="noopener">Résumé</a>
     <button class="nav-burger" id="nav-burger" aria-label="Open menu" aria-expanded="false" aria-controls="nav-panel">☰</button>
   </nav>
-  <div class="nav-panel glass glass-panel" id="nav-panel">
+  <div class="nav-panel glass frost glass-panel" id="nav-panel">
     <a href="#about">About</a>
     <a href="#work">Work</a>
     <a href="#expertise">Expertise</a>
@@ -430,7 +489,7 @@
           <h2 class="t-section">Engineering across AI, backend<br>and the full stack.</h2>
         </div>
         <div class="about-grid">
-          <div class="about-text glass glass-panel reveal" id="about-text"></div>
+          <div class="about-text glass frost glass-panel reveal" id="about-text"></div>
           <dl class="profile-tile glass glass-panel reveal" id="profile"></dl>
         </div>
       </div>
@@ -451,7 +510,7 @@
           <span class="note" id="repo-note"></span>
         </div>
         <div class="status" id="status">Loading repositories…</div>
-        <div class="repo-list glass glass-panel reveal" id="repo-list"></div>
+        <div class="repo-list glass frost glass-panel reveal" id="repo-list"></div>
       </div>
     </section>
 
@@ -472,19 +531,18 @@
           <p class="eyebrow">Experience</p>
           <h2 class="t-section">Where I've worked.</h2>
         </div>
-        <div class="xp-list glass glass-panel reveal" id="xp-list"></div>
+        <div class="xp-list glass frost glass-panel reveal" id="xp-list"></div>
 
         <div class="more-head reveal">
           <h3>Credentials</h3>
         </div>
-        <div class="cert-list glass glass-panel reveal" id="cert-list"></div>
+        <div class="cert-list glass frost glass-panel reveal" id="cert-list"></div>
       </div>
     </section>
 
     <section class="band" id="contact">
       <div class="wrap">
-        <div class="contact-panel glass glass-panel lens reveal">
-          <span class="lens-rim" aria-hidden="true"></span>
+        <div class="contact-panel glass glass-panel reveal">
           <p class="eyebrow">Contact</p>
           <h2 class="t-section">Let's talk.</h2>
           <p class="sub" id="contact-sub"></p>
@@ -657,7 +715,7 @@
     $("nav-resume").href = PROFILE.resume;
 
     $("cred").innerHTML = PROFILE.credentials
-      .map(c => `<div class="glass glass-card lens reveal"><span class="lens-rim" aria-hidden="true"></span><dt>${esc(c.k)}</dt><dd>${esc(c.v)}</dd></div>`).join("");
+      .map(c => `<div class="glass glass-card reveal"><dt>${esc(c.k)}</dt><dd>${esc(c.v)}</dd></div>`).join("");
 
     $("about-text").innerHTML = PROFILE.about.map(p => `<p>${p}</p>`).join("");
     $("profile").innerHTML = PROFILE.profile
@@ -701,7 +759,21 @@
       return `<a class="${cls}" href="${s.url}" ${newTab ? 'target="_blank" rel="noopener"' : ""}>${esc(s.label)}</a>`;
     }).join("");
 
-    /* ---------- liquid glass: specular highlight tracks the pointer ---------- */
+    /* ---------- liquid glass ----------
+       Every glass surface gets a refracting rim element. Injected rather than
+       written into each template so the material stays defined in one place. */
+    function fitGlass(root = document) {
+      root.querySelectorAll(".glass").forEach(g => {
+        if (g.querySelector(":scope > .lens-rim")) return;
+        const rim = document.createElement("span");
+        rim.className = "lens-rim";
+        rim.setAttribute("aria-hidden", "true");
+        g.prepend(rim);
+      });
+    }
+    fitGlass();
+
+    /* specular highlight tracks the pointer */
     document.addEventListener("pointermove", e => {
       const g = e.target.closest(".glass");
       if (!g) return;
